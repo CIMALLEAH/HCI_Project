@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PlanEase - Planner</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="data.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', cursive;
+      background: linear-gradient(180deg, #1a1a5e 0%, #0d0d3d 100%);
+      min-height: 100vh;
+      color: white;
+      overflow-x: hidden;
+    }
+
+    .app-container {
+      max-width: 420px;
+      margin: 0 auto;
+      min-height: 100vh;
+      background: linear-gradient(180deg, #1e2875 0%, #0f1440 100%);
+      position: relative;
+      padding-bottom: 80px;
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, #2d3b8f 0%, #1e2668 100%);
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-img {
+      width: 50px;
+      height: 50px;
+      object-fit: contain;
+    }
+
+    .logo-text h1 {
+      font-size: 22px;
+      font-weight: bold;
+      color: white;
+      letter-spacing: 1px;
+    }
+
+    .logo-text p {
+      font-size: 9px;
+      color: #8ea5ff;
+      font-style: italic;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .notification-btn {
+      background: rgba(74, 158, 255, 0.2);
+      border: 2px solid rgba(74, 158, 255, 0.4);
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.3s;
+    }
+
+    .notification-btn:hover {
+      background: rgba(74, 158, 255, 0.4);
+      transform: scale(1.05);
+    }
+
+    .notification-btn i {
+      font-size: 20px;
+      color: white;
+    }
+
+    .notification-dot {
+      width: 10px;
+      height: 10px;
+      background: #ff4444;
+      border-radius: 50%;
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      border: 2px solid #2d3b8f;
+    }
+
+    .profile-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 3px solid #4a9eff;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .profile-icon:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(74, 158, 255, 0.6);
+    }
+
+    /* Content */
+    .content {
+      padding: 20px;
+    }
+
+    .planner-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .planner-header h1 {
+      font-size: 42px;
+      font-weight: bold;
+    }
+
+    .add-btn {
+      background: #4ade80;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 15px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 15px;
+      box-shadow: 0 4px 15px rgba(74, 222, 128, 0.4);
+      transition: all 0.3s;
+    }
+
+    .add-btn:hover {
+      background: #22c55e;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(74, 222, 128, 0.6);
+    }
+
+    .add-btn:active {
+      transform: translateY(0);
+    }
+
+    .planner-filters {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .filter-tabs {
+      display: flex;
+      gap: 10px;
+    }
+
+    .filter-tab {
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      padding: 8px 15px;
+      border-radius: 8px;
+      color: white;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .filter-tab.active {
+      background: #4ade80;
+    }
+
+    .sort-dropdown {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      color: white;
+      padding: 5px 10px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .sort-dropdown option {
+      background: #1e2668;
+      color: white;
+    }
+
+    .planner-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .event-item {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 15px;
+      padding: 15px;
+      border-left: 4px solid #4a9eff;
+      position: relative;
+      transition: all 0.3s;
+    }
+
+    .event-item:hover {
+      transform: translateX(5px);
+      box-shadow: 0 5px 15px rgba(74, 158, 255, 0.3);
+    }
+
+    .event-item.school {
+      border-left-color: #4a9eff;
+    }
+
+    .event-item.personal {
+      border-left-color: #9b59b6;
+    }
+
+    .event-item.work {
+      border-left-color: #3498db;
+    }
+
+    .event-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .event-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .event-indicator {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #4a9eff;
+    }
+
+    .event-title h3 {
+      font-size: 16px;
+    }
+
+    .event-badge {
+      background: #4a9eff;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: bold;
+    }
+
+    .event-badge.tomorrow {
+      background: #2ecc71;
+    }
+
+    .event-badge.ending-soon {
+      background: #ff4444;
+    }
+
+    .event-badge.friday {
+      background: #f39c12;
+    }
+
+    .event-details p {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .event-time {
+      font-size: 14px;
+      color: white;
+      margin-top: 8px;
+    }
+
+    .event-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .action-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      padding: 8px 15px;
+      border-radius: 8px;
+      color: white;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .action-btn.edit:hover {
+      background: #4a9eff;
+    }
+
+    .action-btn.delete:hover {
+      background: #ff4444;
+    }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 420px;
+      background: rgba(30, 40, 100, 0.95);
+      backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-around;
+      padding: 12px 0;
+      border-top: 2px solid rgba(74, 158, 255, 0.3);
+      z-index: 1000;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      color: rgba(255, 255, 255, 0.5);
+      padding: 8px 15px;
+      border-radius: 10px;
+    }
+
+    .nav-item:hover {
+      color: #4a9eff;
+      background: rgba(74, 158, 255, 0.1);
+    }
+
+    .nav-item.active {
+      color: white;
+      background: rgba(74, 158, 255, 0.3);
+    }
+
+    .nav-icon {
+      font-size: 24px;
+    }
+
+    .nav-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: linear-gradient(180deg, #1e2875 0%, #0f1440 100%);
+      padding: 35px;
+      border-radius: 25px;
+      max-width: 90%;
+      width: 340px;
+      border: 2px solid rgba(74, 158, 255, 0.4);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-header {
+      font-size: 24px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .modal-body {
+      text-align: center;
+      margin-bottom: 25px;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .modal-btn {
+      flex: 1;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .modal-btn.cancel {
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .modal-btn.cancel:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    .modal-btn.confirm {
+      background: #ff4444;
+      color: white;
+    }
+
+    .modal-btn.confirm:hover {
+      background: #cc0000;
+    }
+
+    .modal-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    /* Notification Panel */
+    .notification-panel {
+      display: none;
+      position: fixed;
+      top: 80px;
+      right: calc(50% - 190px);
+      background: linear-gradient(180deg, #1e2875 0%, #0f1440 100%);
+      border-radius: 15px;
+      padding: 20px;
+      width: 300px;
+      max-height: 400px;
+      overflow-y: auto;
+      border: 2px solid rgba(74, 158, 255, 0.4);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+      z-index: 1500;
+    }
+
+    .notification-panel.active {
+      display: block;
+      animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .notification-panel h3 {
+      font-size: 18px;
+      margin-bottom: 15px;
+      color: #4a9eff;
+    }
+
+    .notification-item {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      font-size: 13px;
+      border-left: 3px solid #4a9eff;
+    }
+
+    .notification-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .notification-item.unread {
+      border-left-color: #ff4444;
+    }
+
+    @media (max-width: 420px) {
+      .app-container {
+        max-width: 100%;
+      }
+      
+      .content {
+        padding: 15px;
+      }
+
+      .notification-panel {
+        right: 10px;
+        left: 10px;
+        width: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <div class="header">
+      <div class="logo">
+        <img src="https://via.placeholder.com/50x50/4a9eff/ffffff?text=PE" alt="PlanEase Logo" class="logo-img">
+        <div class="logo-text">
+          <h1>PLAN EASE</h1>
+          <p>Plan with Ease</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="notification-btn" onclick="toggleNotifications()">
+          <i class="fas fa-list"></i>
+          <div class="notification-dot"></div>
+        </div>
+        <div class="profile-icon">
+          <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 18px;" id="profileInitial">D</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notification Panel -->
+    <div class="notification-panel" id="notificationPanel">
+      <h3><i class="fas fa-bell"></i> Notifications</h3>
+      <div id="notificationList">
+        <!-- Notifications will be generated dynamically -->
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="planner-header">
+        <h1>Planner</h1>
+        <button class="add-btn" onclick="handleAdd()">
+          <i class="fas fa-plus"></i>
+          <span>Add</span>
+        </button>
+      </div>
+
+      <div class="planner-filters">
+        <div class="filter-tabs">
+          <button class="filter-tab active" onclick="filterEvents('all')">ALL</button>
+        </div>
+        <select class="sort-dropdown" onchange="sortPlanner(this.value)">
+          <option value="date">Sort by: Date</option>
+          <option value="priority">Sort by: Priority</option>
+          <option value="type">Sort by: Type</option>
+        </select>
+      </div>
+
+      <div class="planner-list" id="plannerList">
+        <!-- Events will be generated dynamically from data.js -->
+      </div>
+    </div>
+
+    <div class="bottom-nav">
+      <a href="home.html" class="nav-item">
+        <div class="nav-icon"><i class="fas fa-home"></i></div>
+        <div class="nav-label">Home</div>
+      </a>
+      <a href="calendar.html" class="nav-item">
+        <div class="nav-icon"><i class="far fa-calendar-alt"></i></div>
+        <div class="nav-label">Calendar</div>
+      </a>
+      <a href="planner.html" class="nav-item active">
+        <div class="nav-icon"><i class="fas fa-book"></i></div>
+        <div class="nav-label">Planner</div>
+      </a>
+      <a href="account.html" class="nav-item">
+        <div class="nav-icon"><i class="far fa-user"></i></div>
+        <div class="nav-label">Account</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="modal" id="deleteModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <i class="fas fa-exclamation-triangle" style="color: #ff4444; font-size: 48px;"></i>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete this event?<br>This action cannot be undone.
+      </div>
+      <div class="modal-actions">
+        <button class="modal-btn cancel" onclick="closeModal()">Cancel</button>
+        <button class="modal-btn confirm" onclick="confirmDelete()">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentDeleteId = null;
+    let currentFilter = 'all';
+    let currentSort = 'date';
+
+    // Initialize page
+    window.addEventListener('DOMContentLoaded', () => {
+      loadUserProfile();
+      renderNotifications();
+      renderPlanner();
+    });
+
+    function loadUserProfile() {
+      document.getElementById('profileInitial').textContent = AppData.user.firstName.charAt(0);
+    }
+
+    function renderNotifications() {
+      const container = document.getElementById('notificationList');
+      const upcomingEvents = AppData.getUpcomingEvents(3);
+      
+      if (upcomingEvents.length === 0) {
+        container.innerHTML = '<div class="notification-item">No new notifications</div>';
+        return;
+      }
+
+      let html = '';
+      upcomingEvents.forEach((event, index) => {
+        const unreadClass = index === 0 ? 'unread' : '';
+        const timeText = event.daysUntil === 0 ? 'starting soon' : 
+                        event.daysUntil === 1 ? 'Tomorrow' : 
+                        `in ${event.daysUntil} days`;
+        
+        html += `
+          <div class="notification-item ${unreadClass}">
+            <strong>${event.title} ${timeText}!</strong><br>
+            <small>${event.fullTitle} at ${event.startTime}</small>
+          </div>
+        `;
+      });
+      
+      container.innerHTML = html;
+    }
+
+    function renderPlanner() {
+      const container = document.getElementById('plannerList');
+      let items = [...AppData.events];
+      
+      // Filter
+      if (currentFilter !== 'all') {
+        items = items.filter(item => item.type === currentFilter);
+      }
+      
+      // Sort
+      if (currentSort === 'date') {
+        items.sort((a, b) => new Date(a.date) - new Date(b.date));
+      } else if (currentSort === 'type') {
+        items.sort((a, b) => a.type.localeCompare(b.type));
+      }
+      
+      if (items.length === 0) {
+        container.innerHTML = '<div style="text-align: center; padding: 40px; color: rgba(255,255,255,0.5);">No events found.</div>';
+        return;
+      }
+      
+      let html = '';
+      items.forEach(event => {
+        const currentEvent = AppData.getCurrentEvent();
+        const isCurrent = currentEvent && currentEvent.id === event.id;
+        const eventDate = new Date(event.date);
+        const today = new Date();
+        const diffTime = eventDate - today;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        
+        let badgeText = '';
+        let badgeClass = '';
+        
+        if (isCurrent) {
+          badgeText = 'Ends in: 00:30:00';
+          badgeClass = 'ending-soon';
+        } else if (diffDays === 0) {
+          badgeText = 'Today';
+          badgeClass = 'ending-soon';
+        } else if (diffDays === 1) {
+          badgeText = 'Tomorrow';
+          badgeClass = 'tomorrow';
+        } else if (diffDays <= 7) {
+          const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+          badgeText = dayNames[eventDate.getDay()];
+          badgeClass = 'friday';
+        } else {
+          badgeText = eventDate.toLocaleDateString('en-GB');
+          badgeClass = 'friday';
+        }
+        
+        const indicatorColor = event.type === 'personal' ? '#9b59b6' : event.type === 'work' ? '#3498db' : '#4a9eff';
+        const typeIcon = event.type === 'school' ? 'fa-graduation-cap' : event.type === 'personal' ? 'fa-user' : 'fa-briefcase';
+        const typeName = event.type.charAt(0).toUpperCase() + event.type.slice(1);
+        
+        html += `
+          <div class="event-item ${event.type}" data-id="${event.id}">
+            <div class="event-header">
+              <div class="event-title">
+                <div class="event-indicator" style="background: ${indicatorColor};"></div>
+                <h3>${event.title}</h3>
+              </div>
+              <div class="event-badge ${badgeClass}">${badgeText}</div>
+            </div>
+            <div class="event-details">
+              <p><strong>${event.category}</strong></p>
+              <p>${event.fullTitle}</p>
+              <p><i class="fas ${typeIcon}"></i> ${typeName}</p>
+              <p><i class="fas fa-laptop"></i> ${event.location}</p>
+              <p class="event-time"><i class="far fa-calendar"></i> Date: ${eventDate.toLocaleDateString('en-GB')}<br><i class="far fa-clock"></i> Time: ${event.startTime} - ${event.endTime}</p>
+            </div>
+            <div class="event-actions">
+              <button class="action-btn edit" onclick="handleEdit(${event.id})">
+                <i class="fas fa-edit"></i> Edit
+              </button>
+              <button class="action-btn delete" onclick="handleDelete(${event.id})">
+                <i class="fas fa-trash"></i> Delete
+              </button>
+            </div>
+          </div>
+        `;
+      });
+      
+      container.innerHTML = html;
+    }
+
+    function filterEvents(type) {
+      currentFilter = type;
+      
+      // Update active tab
+      document.querySelectorAll('.filter-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      event.target.classList.add('active');
+      
+      renderPlanner();
+    }
+
+    function sortPlanner(sortBy) {
+      currentSort = sortBy;
+      renderPlanner();
+    }
+
+    function toggleNotifications() {
+      const panel = document.getElementById('notificationPanel');
+      panel.classList.toggle('active');
+    }
+
+    // Close notification panel when clicking outside
+    document.addEventListener('click', function(e) {
+      const panel = document.getElementById('notificationPanel');
+      const notifBtn = document.querySelector('.notification-btn');
+      
+      if (panel.classList.contains('active') && 
+          !panel.contains(e.target) && 
+          !notifBtn.contains(e.target)) {
+        panel.classList.remove('active');
+      }
+    });
+
+    function handleAdd() {
+      alert('Add new event feature coming soon!');
+      // This would open a form to add a new event
+    }
+
+    function handleEdit(id) {
+      alert(`Edit event ${id} - Feature coming soon!`);
+      // This would open a form to edit the event
+    }
+
+    function handleDelete(id) {
+      currentDeleteId = id;
+      document.getElementById('deleteModal').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('deleteModal').classList.remove('active');
+      currentDeleteId = null;
+    }
+
+    function confirmDelete() {
+      if (currentDeleteId) {
+        const eventElement = document.querySelector(`.event-item[data-id="${currentDeleteId}"]`);
+        if (eventElement) {
+          eventElement.style.transition = 'all 0.3s';
+          eventElement.style.opacity = '0';
+          eventElement.style.transform = 'translateX(-100%)';
+          
+          setTimeout(() => {
+            // Delete from AppData
+            AppData.deleteEvent(currentDeleteId);
+            // Re-render the list
+            renderPlanner();
+          }, 300);
+        }
+      }
+      closeModal();
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('deleteModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeModal();
+      }
+    });
+  </script>
+</body>
+</html>

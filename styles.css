@@ -1,0 +1,1373 @@
+/* Global Reset and Font */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* The new 'Comic Sans MS' stack replaces 'Gagalin' and related fonts */
+body {
+  font-family: 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', cursive;
+  /* Updated body background from new style */
+  background: linear-gradient(180deg, #1a1a5e 0%, #0d0d3d 100%);
+  min-height: 100vh;
+  color: white;
+  overflow-x: hidden;
+}
+
+/* App Container */
+.app-container {
+  max-width: 420px;
+  margin: 0 auto;
+  min-height: 100vh;
+  /* Updated app-container background from new style */
+  background: linear-gradient(180deg, #1e2875 0%, #0f1440 100%);
+  position: relative;
+  padding-bottom: 80px;
+}
+
+/* <strong>Header</strong> - Updated with new style's layout, colors, and shadows */
+.header {
+  /* New header background and box-shadow */
+  background: linear-gradient(135deg, #2d3b8f 0%, #1e2668 100%);
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-img {
+  /* Reduced size to match the new header's compact style */
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  /* Removed original filter for a cleaner look */
+  filter: none;
+}
+
+/* Removed original .logo-icon and its styles as it's not present in the new header structure */
+
+.logo-text h1 {
+  /* Updated font-size and added letter-spacing */
+  font-family: inherit; /* Use body font-family */
+  font-size: 22px;
+  font-weight: bold;
+  color: white;
+  letter-spacing: 1px;
+}
+
+.logo-text p {
+  /* Updated font-size and color */
+  font-size: 9px;
+  color: #8ea5ff;
+  font-style: italic;
+}
+
+/* New header-right container for icons */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* <strong>Notification Button</strong> - New style's button */
+.notification-btn {
+  background: rgba(74, 158, 255, 0.2);
+  border: 2px solid rgba(74, 158, 255, 0.4);
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s;
+}
+
+.notification-btn:hover {
+  background: rgba(74, 158, 255, 0.4);
+  transform: scale(1.05);
+}
+
+.notification-btn i {
+  font-size: 20px;
+  color: white;
+}
+
+/* Replaced .menu-icon with .notification-btn, keeping dot style */
+.notification-dot {
+  width: 10px;
+  height: 10px;
+  background: #ff4444;
+  border-radius: 50%;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  border: 2px solid #2d3b8f; /* New border from the updated style */
+}
+
+.profile-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 3px solid #4a9eff;
+  overflow: hidden;
+  cursor: pointer; /* Added cursor and transition for hover effect */
+  transition: all 0.3s;
+}
+
+.profile-icon:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(74, 158, 255, 0.6);
+}
+
+.profile-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* <strong>Bottom Navigation</strong> - Updated with new style's colors, padding, and hover/active states */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 420px;
+  /* Updated background and border */
+  background: rgba(30, 40, 100, 0.95);
+  backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: space-around;
+  padding: 12px 0; /* Updated padding */
+  border-top: 2px solid rgba(74, 158, 255, 0.3);
+  z-index: 1000;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.5); /* Updated inactive color */
+  padding: 8px 15px; /* Added padding */
+  border-radius: 10px; /* Added border-radius */
+}
+
+.nav-item:hover {
+  color: #4a9eff;
+  background: rgba(74, 158, 255, 0.1); /* New hover background */
+  transform: none; /* Removed original translateY(-3px) for simpler effect */
+}
+
+.nav-item.active {
+  color: white;
+  background: rgba(74, 158, 255, 0.3); /* New active background */
+}
+
+.nav-icon {
+  font-size: 24px;
+  font-weight: normal; /* Removed bold from original style */
+}
+
+.nav-label {
+  font-size: 10px; /* Updated font-size */
+  text-transform: uppercase;
+  font-weight: bold; /* Added bold */
+  letter-spacing: 0.5px; /* Added letter-spacing */
+}
+
+/* <strong>Content Area</strong> */
+.content {
+  padding: 20px;
+}
+
+/* <strong>Splash Screen</strong> - Applying new body background */
+.splash-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  /* Updated to new body background color for consistency */
+  background: linear-gradient(180deg, #1a1a5e 0%, #0d0d3d 100%);
+}
+
+.splash-icon {
+  width: 150px;
+  height: 150px;
+  background: rgba(74, 158, 255, 0.2);
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 40px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.splash-logo {
+  /* Using 'Comic Sans MS' stack */
+  font-family: inherit;
+  font-size: 64px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  background: linear-gradient(135deg, #4a9eff, #6fb1ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.progress-bar {
+  width: 250px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 30px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4a9eff, #6fb1ff);
+  border-radius: 10px;
+  width: 0%;
+  transition: width 0.1s linear;
+}
+
+@keyframes loading {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
+
+.progress-text {
+  margin-top: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #4a9eff;
+}
+
+/* <strong>Auth Forms</strong> - Applying new app-container background for consistency */
+.auth-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+  /* Updated to new app-container background color for consistency */
+  background: linear-gradient(180deg, #0f1440 0%, #1e2875 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-container::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: url('assets/logo.png'); /* path to your logo */
+  background-repeat: repeat; /* repeat it like tiles */
+  background-size: 100px 100px; /* adjust size */
+  opacity: 0.05; /* faint effect */
+  animation: float 20s linear infinite;
+  z-index: 0; /* behind the form */
+}
+
+/* Keyframes for the background image animation */
+@keyframes float {
+  0% { transform: translate(0, 0); }
+  50% { transform: translate(-10px, -10px); }
+  100% { transform: translate(0, 0); }
+}
+
+.auth-form {
+  position: relative;
+  z-index: 1; /* above the floating logos */
+  /* Main form styling */
+  background: rgba(74, 158, 255, 0.15);
+  backdrop-filter: blur(20px);
+  border-radius: 30px;
+  padding: 40px 30px;
+  width: 100%;
+  max-width: 380px;
+  border: 2px solid rgba(74, 158, 255, 0.3);
+}
+
+.auth-form h2 {
+  font-size: 36px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-family: inherit; /* Use consistent font */
+}
+
+.auth-form .subtitle {
+  text-align: center;
+  color: #4a9eff;
+  font-size: 14px;
+  margin-bottom: 30px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #4a9eff;
+  margin-bottom: 8px;
+  font-style: italic;
+}
+
+.input-wrapper {
+  position: relative;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 15px;
+  font-size: 14px;
+  color: #1a1a4e;
+  font-style: italic;
+  font-family: inherit; /* Use consistent font for inputs */
+}
+
+.form-group input::placeholder {
+  color: rgba(26, 26, 78, 0.5);
+  font-style: italic;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 18px;
+  color: #1a1a4e;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 15px;
+  background: transparent;
+  border: 3px solid white;
+  border-radius: 25px;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: 20px;
+  font-family: inherit; /* Use consistent font */
+}
+
+.submit-btn:hover {
+  background: white;
+  color: #1a1a4e;
+  transform: translateY(-2px);
+}
+
+.auth-link {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+.auth-link a {
+  color: white;
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+.forgot-password {
+  text-align: right;
+  margin-top: 10px;
+  font-size: 13px;
+}
+
+.forgot-password a {
+  color: white;
+  text-decoration: none;
+}
+
+/* <strong>Home Dashboard</strong> */
+.greeting {
+  margin-bottom: 20px;
+}
+
+.greeting h1 {
+  font-size: 28px;
+  margin-bottom: 5px;
+  font-family: inherit; /* Use consistent font */
+}
+
+.greeting .date {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.greeting .time {
+  font-size: 20px;
+  font-weight: bold;
+  color: #4a9eff;
+}
+
+.dashboard-cards {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.info-card {
+  flex: 1;
+  background: rgba(74, 158, 255, 0.2);
+  border-radius: 15px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.info-card.upcoming {
+  background: rgba(255, 193, 7, 0.2);
+}
+
+.card-icon {
+  font-size: 40px;
+}
+
+.card-time {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.card-title {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.card-subtitle {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.countdown {
+  font-size: 18px;
+  font-weight: bold;
+  color: #ff4444;
+}
+
+.alarm-card {
+  background: rgba(74, 158, 255, 0.2);
+  border-radius: 15px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.alarm-icon {
+  font-size: 50px;
+  color: #ffc107;
+}
+
+.alarm-label {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.alarm-status {
+  font-size: 14px;
+  color: #4a9eff;
+}
+
+.alert {
+  background: rgba(255, 68, 68, 0.9);
+  border-radius: 15px;
+  padding: 15px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.alert-icon {
+  font-size: 30px;
+}
+
+.alert-content h3 {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.alert-content p {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.resolve-btn {
+  background: white;
+  color: #ff4444;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-left: auto;
+}
+
+.section {
+  background: rgba(74, 158, 255, 0.1);
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.section-header h2 {
+  font-size: 20px;
+}
+
+.event-item {
+  /* Updated event-item hover effect from new style */
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 15px;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-left: 4px solid #4a9eff;
+  position: relative;
+  transition: all 0.3s;
+}
+
+.event-item:hover {
+  transform: translateX(5px);
+  box-shadow: 0 5px 15px rgba(74, 158, 255, 0.3);
+}
+
+.event-item.school {
+  border-left-color: #4a9eff;
+}
+
+.event-item.personal {
+  border-left-color: #9b59b6;
+}
+
+.event-item.work {
+  border-left-color: #3498db;
+}
+
+.event-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.event-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.event-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #4a9eff;
+}
+
+.event-title h3 {
+  font-size: 16px;
+}
+
+.event-badge {
+  background: #4a9eff;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.event-badge.tomorrow {
+  background: #2ecc71;
+}
+
+.event-badge.ending-soon {
+  background: #ff4444;
+}
+
+.event-badge.friday {
+  background: #f39c12;
+}
+
+/* Updated event-details p to include icon/detail layout from new style */
+.event-details p {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.event-time {
+  font-size: 14px;
+  color: white;
+  margin-top: 5px;
+}
+
+/* Added event-actions from new style to Home Dashboard's events */
+.event-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.action-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  padding: 8px 15px;
+  border-radius: 8px;
+  color: white;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.action-btn.edit:hover {
+  background: #4a9eff;
+}
+
+.action-btn.delete:hover {
+  background: #ff4444;
+}
+
+.no-events {
+  text-align: center;
+  padding: 30px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 16px;
+}
+
+.task-item {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 15px;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-left: 4px solid #9b59b6;
+}
+
+.task-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.task-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.task-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #9b59b6;
+}
+
+.task-badge {
+  background: #9b59b6;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.task-badge.work {
+  background: #3498db;
+}
+
+.task-description {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 10px;
+}
+
+.task-meta {
+  display: flex;
+  gap: 15px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* <strong>Calendar</strong> */
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.calendar-header h1 {
+  font-size: 32px;
+  font-family: inherit; /* Use consistent font */
+}
+
+.info-icon {
+  width: 30px;
+  height: 30px;
+  border: 2px solid white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.month-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 15px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.nav-btn {
+  background: rgba(74, 158, 255, 0.3);
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.nav-btn:hover {
+  background: rgba(74, 158, 255, 0.5);
+  transform: scale(1.1);
+}
+
+.current-month {
+  font-size: 20px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.view-toggle {
+  display: flex;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 25px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.toggle-btn {
+  flex: 1;
+  padding: 12px;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.toggle-btn.active {
+  background: #4a9eff;
+  color: white;
+}
+
+.calendar-grid {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 20px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+.weekday {
+  text-align: center;
+  font-size: 12px;
+  font-weight: bold;
+  color: rgba(255, 255, 255, 0.7);
+  padding: 5px;
+}
+
+.days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+}
+
+.day {
+  aspect-ratio: 1;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.day:hover {
+  transform: scale(1.05);
+}
+
+.day.has-events {
+  background: #8b7355;
+}
+
+.day.today {
+  background: #5a7fa6;
+  font-weight: bold;
+}
+
+.day.selected {
+  background: #4a6fa5;
+  box-shadow: 0 0 10px rgba(74, 158, 255, 0.5);
+}
+
+.day.conflict {
+  background: #6d4c41;
+}
+
+.day-indicators {
+  display: flex;
+  gap: 2px;
+  margin-top: 2px;
+}
+
+.indicator-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: white;
+}
+
+.schedule-preview {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 20px;
+  padding: 20px;
+}
+
+.schedule-preview h3 {
+  font-size: 18px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.upcoming-events {
+  margin-bottom: 20px;
+}
+
+.upcoming-label {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* <strong>Sort Dropdown</strong> - Applied updated style */
+.sort-dropdown {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: white;
+  padding: 5px 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.sort-dropdown option {
+  background: #1e2668; /* Added background for dropdown options */
+  color: white;
+}
+
+/* <strong>Planner</strong> - Consolidated with updated styles */
+.planner-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.planner-header h1 {
+  /* Updated font-size from new style */
+  font-size: 42px;
+  font-weight: bold;
+  font-family: inherit; /* Use consistent font */
+}
+
+/* Updated Add Button with new padding, radius, shadow, and hover effect */
+.add-btn {
+  background: #4ade80;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 15px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Updated gap */
+  font-size: 15px; /* Updated font-size */
+  box-shadow: 0 4px 15px rgba(74, 222, 128, 0.4); /* New shadow */
+  transition: all 0.3s;
+}
+
+.add-btn:hover {
+  background: #22c55e;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(74, 222, 128, 0.6);
+}
+
+.add-btn:active {
+  transform: translateY(0); /* Added active state */
+}
+
+.planner-filters {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.filter-tabs {
+  display: flex;
+  gap: 10px;
+}
+
+.filter-tab {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  padding: 8px 15px;
+  border-radius: 8px;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+/* Updated active filter color to match new style's green */
+.filter-tab.active {
+  background: #4ade80;
+}
+
+.planner-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* <strong>Account</strong> */
+.account-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.account-header h1 {
+  font-size: 32px;
+  margin-bottom: 20px;
+  font-family: inherit; /* Use consistent font */
+}
+
+.profile-section {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 20px;
+  padding: 30px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.profile-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 4px solid #4a9eff;
+  margin: 0 auto 15px;
+  overflow: hidden;
+  position: relative;
+}
+
+.profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.verified-badge {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  width: 25px;
+  height: 25px;
+  background: #4a9eff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid white;
+}
+
+.profile-name {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.profile-email {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 5px;
+}
+
+.account-created {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.settings-section {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.settings-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  cursor: pointer;
+}
+
+.settings-header h2 {
+  font-size: 18px;
+  flex: 1;
+}
+
+.expand-icon {
+  font-size: 18px;
+  transition: transform 0.3s;
+}
+
+.settings-header.expanded .expand-icon {
+  transform: rotate(180deg);
+}
+
+.settings-content {
+  display: none;
+  padding-top: 10px;
+}
+
+.settings-content.expanded {
+  display: block;
+}
+
+.setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.setting-item:last-child {
+  border-bottom: none;
+}
+
+.setting-label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.setting-label h3 {
+  font-size: 15px;
+}
+
+.setting-label p {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.toggle-switch {
+  width: 50px;
+  height: 26px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 13px;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.toggle-switch.active {
+  background: #4a9eff;
+}
+
+.toggle-slider {
+  width: 22px;
+  height: 22px;
+  background: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.3s;
+}
+
+.toggle-switch.active .toggle-slider {
+  transform: translateX(24px);
+}
+
+.setting-value {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.logout-btn {
+  background: transparent;
+  border: 2px solid #ff4444;
+  color: #ff4444;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  justify-content: center;
+}
+
+.logout-btn:hover {
+  background: #ff4444;
+  color: white;
+}
+
+/* <strong>Modal</strong> - Added from new style */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 2000;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal.active {
+  display: flex;
+}
+
+.modal-content {
+  background: linear-gradient(180deg, #1e2875 0%, #0f1440 100%);
+  padding: 35px;
+  border-radius: 25px;
+  max-width: 90%;
+  width: 340px;
+  border: 2px solid rgba(74, 158, 255, 0.4);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.modal-header {
+  font-size: 24px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-family: inherit; /* Use consistent font */
+}
+
+.modal-body {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.modal-btn {
+  flex: 1;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-family: inherit; /* Use consistent font */
+}
+
+.modal-btn.cancel {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.modal-btn.cancel:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.modal-btn.confirm {
+  background: #ff4444;
+  color: white;
+}
+
+.modal-btn.confirm:hover {
+  background: #cc0000;
+}
+
+.modal-btn:hover {
+  transform: translateY(-2px);
+}
+
+/* <strong>Notification Panel</strong> - Added from new style */
+.notification-panel {
+  display: none;
+  position: fixed;
+  top: 80px;
+  right: calc(50% - 190px);
+  background: linear-gradient(180deg, #1e2875 0%, #0f1440 100%);
+  border-radius: 15px;
+  padding: 20px;
+  width: 300px;
+  max-height: 400px;
+  overflow-y: auto;
+  border: 2px solid rgba(74, 158, 255, 0.4);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  z-index: 1500;
+}
+
+.notification-panel.active {
+  display: block;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.notification-panel h3 {
+  font-size: 18px;
+  margin-bottom: 15px;
+  color: #4a9eff;
+  font-family: inherit; /* Use consistent font */
+}
+
+.notification-item {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  border-left: 3px solid #4a9eff;
+}
+
+.notification-item:last-child {
+  margin-bottom: 0;
+}
+
+.notification-item.unread {
+  border-left-color: #ff4444;
+}
+
+/* <strong>Responsive</strong> */
+@media (max-width: 420px) {
+  .app-container {
+    max-width: 100%;
+  }
+  
+  .content {
+    padding: 15px;
+  }
+
+  .bottom-nav {
+    border-top: 2px solid rgba(74, 158, 255, 0.3); /* Ensure consistency with desktop style */
+  }
+
+  .notification-panel {
+    right: 10px;
+    left: 10px;
+    width: auto;
+  }
+}
