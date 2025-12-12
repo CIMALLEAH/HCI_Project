@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PlanEase - Home</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <div class="header">
+      <div class="logo">
+        <div class="logo-img"><img src="assets/logo.png" alt="PlanEase Logo"></div>
+        <div class="logo-text">
+          <h1>PLAN EASE</h1>
+          <p>Plan with Ease</p>
+        </div>
+      </div>
+
+      <div class="profile-icon" id="profileIcon" title="Profile">
+        <img src="assets/profile_pic.png" alt="Profile">
+        <div class="profile-tooltip">
+          <div class="profile-tooltip-name">Damian Alvah</div>
+          <div class="profile-tooltip-email">dalvah@gmail.com</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="greeting">
+        <h1 id="greeting"></h1>
+        <p class="date" id="currentDate"></p>
+        <p class="time" id="currentTime"></p>
+      </div>
+
+      <div class="dashboard-cards" id="dashboardCards"></div>
+      <div id="alertContainer"></div>
+
+      <div class="section">
+        <div class="section-header">
+          <i class="fas fa-clock"></i>
+          <h2>Today's Schedule</h2>
+        </div>
+        <div class="planner-list" id="todaySchedule"></div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <i class="fas fa-tasks"></i>
+          <h2>Upcoming Tasks</h2>
+        </div>
+        <div class="planner-list" id="upcomingTasks"></div>
+      </div>
+    </div>
+
+    <div class="bottom-nav">
+      <a href="home.html" class="nav-item active"><div class="nav-icon"><i class="fas fa-home"></i></div><div>Home</div></a>
+      <a href="calendar.html" class="nav-item"><div class="nav-icon"><i class="far fa-calendar-alt"></i></div><div>Calendar</div></a>
+      <a href="planner.html" class="nav-item"><div class="nav-icon"><i class="fas fa-book"></i></div><div>Planner</div></a>
+      <a href="account.html" class="nav-item"><div class="nav-icon"><i class="far fa-user"></i></div><div>Account</div></a>
+    </div>
+  </div>
+
+  <script>
+    const AppData = {
+      user: { firstName: 'Damian', lastName: 'Alvah', email: 'dalvah@gmail.com' },
+      events: [
+        { id: 1, kind: 'event', category: 'school', type: 'school', title: 'IT 321', fullTitle: 'Human-Computer Interaction', location: 'Online', startDate: '2025-12-06', startTime: '10:00', endDate: '2025-12-06', endTime: '13:30', priority: 'medium', reminder: '10m', completed: false },
+        { id: 2, kind: 'event', category: 'school', type: 'school', title: 'CS 311', fullTitle: 'Automata Theory and Formal Languages', location: 'Online', startDate: '2025-12-06', startTime: '15:00', endDate: '2025-12-06', endTime: '16:30', priority: 'medium', reminder: '30m', completed: false },
+        { id: 8, kind: 'task', category: 'school', type: 'school', title: 'Submit IT 321 report', fullTitle: 'Submit final report for HCI', location: 'Online', startDate: '2025-12-05', dueDate: '2025-12-05', startTime: '23:59', priority: 'high', reminder: '1d', completed: false },
+        { id: 9, kind: 'task', category: 'personal', type: 'personal', title: 'Video Editing', fullTitle: 'Editing of video - Cutting and pasting of clips as well as finding music that fits well with...', location: 'Online', startDate: '2025-12-10', dueDate: '2025-12-10', startTime: '10:00', priority: 'medium', reminder: '1d', completed: false }
+      ],
+      conflicts: [
+        { title: 'Schedule Conflict Detected', description: 'Personal appointment overlaps with IT 321 on Dec 6' }
+      ],
+      settings: { notifications: { enabled: true, sound: true, vibrate: false } },
+      alarms: [
+        { id: 1, time: '08:00', label: 'Morning Alarm', enabled: true },
+        { id: 2, time: '14:00', label: 'Afternoon Reminder', enabled: false }
+      ],
+
+      getGreeting() {
+        const hour = new Date().getHours();
+        if (hour < 12) return 'Good Morning';
+        if (hour < 18) return 'Good Afternoon';
+        return 'Good Evening';
+      },
+
+      formatDate(dateString) {
+        const d = new Date(dateString);
+        const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
+        return d.toLocaleDateString('en-US', options);
+      },
+
+      getTodayEvents() {
+        const today = new Date().toISOString().split('T')[0];
+        return this.events.filter(e => e.kind === 'event' && e.startDate === today);
+      },
+
+      getUpcomingTasks(days = 7) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        return this.events.filter(e => {
+          if (e.kind !== 'task' || e.completed) return false;
+          const dueDate = new Date(e.dueDate || e.startDate);
+          const diff = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
+          return diff >= 0 && diff <= days;
+        });
+      },
+
+      getCurrentEvent() {
+        const now = new Date();
+        const todayStr = now.toISOString().split('T')[0];
+        return this.events.find(ev => {
+          if (ev.startDate !== todayStr || ev.kind !== 'event') return false;
+          const [sh, sm] = ev.startTime.split(':').map(Number);
+          const [eh, em] = ev.endTime.split(':').map(Number);
+          const start = new Date(now); start.setHours(sh, sm, 0, 0);
+          const end = new Date(now); end.setHours(eh, em, 0, 0);
+          return now >= start && now <= end;
+        });
+      },
+
+      getUpcomingEvents(days = 2) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        return this.events
+          .filter(e => e.kind === 'event')
+          .map(e => {
+            const evDate = new Date(e.startDate);
+            const diff = Math.ceil((evDate - today) / (1000 * 60 * 60 * 24));
+            return { ...e, daysUntil: diff };
+          })
+          .filter(e => e.daysUntil >= 0 && e.daysUntil <= days)
+          .sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+      }
+    };
+
+    let countdownInterval;
+    // Storage key
+    const STORAGE_KEY = 'planease_app_v1';
+    // Scheduler state
+    const lastTriggered = {}; // alarmId -> 'YYYY-MM-DDTHH:MM' last fired minute
+    const snoozeTimeouts = {}; // alarmId -> timeoutID
+    let alarmAudioElement = null;
+
+    function renderPage() {
+      loadAppDataFromStorage();
+      startAlarmScheduler();
+      renderGreeting();
+      renderDashboard();
+      renderAlerts();
+      renderTodaySchedule();
+      renderUpcomingTasks();
+      setInterval(updateTime, 1000);
+    }
+
+    // Persistence helpers
+    function saveAppDataToStorage() {
+      try {
+        const payload = { alarms: AppData.alarms || [], settings: AppData.settings || {} };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+      } catch (e) {
+        console.warn('Failed to save app data', e);
+      }
+    }
+
+    function loadAppDataFromStorage() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const parsed = JSON.parse(raw);
+        if (parsed.alarms && Array.isArray(parsed.alarms)) AppData.alarms = parsed.alarms;
+        if (parsed.settings) AppData.settings = Object.assign(AppData.settings || {}, parsed.settings);
+      } catch (e) {
+        console.warn('Failed to load app data', e);
+      }
+    }
+
+    // Audio setup: try to use an audio file if available, otherwise use WebAudio fallback
+    function ensureAlarmAudio() {
+      if (alarmAudioElement) return alarmAudioElement;
+      const audio = document.createElement('audio');
+      audio.id = 'alarmAudio';
+      audio.preload = 'auto';
+      audio.src = 'assets/alarm.mp3';
+      audio.addEventListener('error', () => {
+        // file not found or failed; we'll use WebAudio as fallback when playing
+        alarmAudioElement = null;
+      });
+      document.body.appendChild(audio);
+      alarmAudioElement = audio;
+      return alarmAudioElement;
+    }
+
+    function playAlarmSoundLoop() {
+      // prefer audio element
+      const audio = ensureAlarmAudio();
+      if (audio && audio.play) {
+        audio.loop = true;
+        audio.currentTime = 0;
+        audio.play().catch(() => {
+          // fallback to beep
+          playBeepLoopFallback();
+        });
+        return;
+      }
+      playBeepLoopFallback();
+    }
+
+    let beepOsc = null;
+    function playBeepLoopFallback() {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type = 'sine';
+        o.frequency.value = 880;
+        g.gain.value = 0.06;
+        o.connect(g); g.connect(ctx.destination);
+        o.start();
+        beepOsc = { osc: o, ctx, gain: g };
+      } catch (e) {
+        console.warn('Audio fallback failed', e);
+      }
+    }
+
+    function stopAlarmSound() {
+      try {
+        if (alarmAudioElement) {
+          alarmAudioElement.pause();
+          alarmAudioElement.currentTime = 0;
+        }
+      } catch (e) {}
+      try {
+        if (beepOsc && beepOsc.osc) {
+          beepOsc.osc.stop();
+          beepOsc.ctx.close();
+          beepOsc = null;
+        }
+      } catch (e) {}
+    }
+
+    // Scheduler: check every 10 seconds for alarms to fire
+    let alarmSchedulerInterval = null;
+    function startAlarmScheduler() {
+      if (alarmSchedulerInterval) return;
+      alarmSchedulerInterval = setInterval(checkAlarmsToFire, 10000);
+      // initial immediate check
+      checkAlarmsToFire();
+    }
+
+    function stopAlarmScheduler() {
+      if (alarmSchedulerInterval) clearInterval(alarmSchedulerInterval);
+      alarmSchedulerInterval = null;
+    }
+
+    function checkAlarmsToFire() {
+      const now = new Date();
+      const hhmm = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+      const minuteKey = now.toISOString().slice(0,16); // YYYY-MM-DDTHH:MM
+
+      // check normal alarms
+      (AppData.alarms || []).forEach(a => {
+        if (!a.enabled) return;
+        if (a.time === hhmm) {
+          const last = lastTriggered[a.id];
+          if (last === minuteKey) return; // already triggered this minute
+          lastTriggered[a.id] = minuteKey;
+          fireAlarm(a);
+        }
+      });
+
+      // check snoozes handled by timeouts (no extra check needed)
+    }
+
+    // Fire alarm UI + sound + vibration
+    function fireAlarm(alarm) {
+      // show firing overlay
+      showFiringOverlay(alarm);
+      // sound
+      if (AppData.settings.notifications.sound) playAlarmSoundLoop();
+      // vibrate
+      if (AppData.settings.notifications.vibrate && navigator.vibrate) navigator.vibrate([300,100,300]);
+    }
+
+    // Show firing overlay with snooze/dismiss
+    function showFiringOverlay(alarm) {
+      let panel = document.getElementById('firingOverlay');
+      if (!panel) {
+        panel = document.createElement('div');
+        panel.id = 'firingOverlay';
+        panel.className = 'alarm-overlay active';
+        panel.innerHTML = `
+          <div class="alarm-overlay-panel" id="firingPanel">
+            <h2 id="firingTitle">Alarm</h2>
+            <p id="firingTime" style="opacity:0.85;margin-bottom:12px"></p>
+            <div style="display:flex;gap:12px;justify-content:center">
+              <button class="resolve-btn" onclick="dismissFiringAlarm()">Dismiss</button>
+              <button class="resolve-btn" onclick="snoozeFiringAlarm(5)">Snooze 5m</button>
+              <button class="resolve-btn" onclick="snoozeFiringAlarm(10)">Snooze 10m</button>
+            </div>
+          </div>`;
+        document.body.appendChild(panel);
+      }
+      panel.classList.add('active');
+      document.getElementById('firingTitle').textContent = alarm.label || 'Alarm';
+      document.getElementById('firingTime').textContent = alarm.time;
+      // focus for accessibility
+      panel.querySelector('.resolve-btn').focus();
+      // store currently firing alarm
+      panel._alarmRef = alarm;
+    }
+
+    function dismissFiringAlarm() {
+      const panel = document.getElementById('firingOverlay');
+      if (!panel) return;
+      stopAlarmSound();
+      if (navigator.vibrate) navigator.vibrate(0);
+      panel.classList.remove('active');
+      // nothing else: alarm remains scheduled for next day
+    }
+
+    function snoozeFiringAlarm(minutes) {
+      const panel = document.getElementById('firingOverlay');
+      if (!panel) return;
+      const alarm = panel._alarmRef;
+      if (!alarm) return;
+      stopAlarmSound();
+      if (navigator.vibrate) navigator.vibrate(0);
+      panel.classList.remove('active');
+      // schedule a timeout to fire after minutes
+      if (snoozeTimeouts[alarm.id]) clearTimeout(snoozeTimeouts[alarm.id]);
+      snoozeTimeouts[alarm.id] = setTimeout(() => {
+        fireAlarm(alarm);
+        delete snoozeTimeouts[alarm.id];
+      }, minutes * 60 * 1000);
+    }
+
+    function renderGreeting() {
+      document.getElementById('greeting').textContent = `${AppData.getGreeting()}, ${AppData.user.firstName}!`;
+      document.getElementById('currentDate').textContent = AppData.formatDate(new Date().toISOString());
+      updateTime();
+    }
+
+    function updateTime() {
+      const now = new Date();
+      document.getElementById('currentTime').textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+    }
+
+    function renderDashboard() {
+      const container = document.getElementById('dashboardCards');
+      let html = '';
+
+      const currentEvent = AppData.getCurrentEvent();
+      const upcomingEvent = AppData.getUpcomingEvents(2)[0];
+
+      // Merged ongoing + upcoming card with hourglass divider
+      html += `<div class="info-card">`;
+      
+      // LEFT SIDE: ONGOING
+      if (currentEvent) {
+        html += `
+          <div class="card-section">
+            <div class="card-section-label">Ends in</div>
+            <div class="countdown" id="countdown">00:00:00</div>
+            <div class="card-section-title">${currentEvent.title}</div>
+          </div>`;
+        setTimeout(() => updateCountdown(currentEvent.endTime), 100);
+      } else {
+        // Check if there are any events left today
+        const todayEvents = AppData.getTodayEvents();
+        const futureEvents = todayEvents.filter(e => {
+          const [h, m] = e.startTime.split(':').map(Number);
+          const eTime = new Date(); eTime.setHours(h, m, 0, 0);
+          return eTime > new Date();
+        });
+        
+        if (futureEvents.length > 0) {
+          // Show next event countdown
+          const nextEvent = futureEvents[0];
+          html += `
+            <div class="card-section">
+              <div class="card-section-label">Ends in</div>
+              <div class="countdown" id="countdown">-- -- --</div>
+              <div class="card-section-title">Enjoy your break</div>
+            </div>`;
+        } else {
+          // No more events today
+          html += `
+            <div class="card-section">
+              <div style="font-size: 48px; margin-bottom: 8px;">🎉</div>
+              <div class="card-section-title">No more events today</div>
+              <div class="card-section-date">Enjoy the rest of your day</div>
+            </div>`;
+        }
+      }
+
+      // MIDDLE: HOURGLASS DIVIDER
+      const hasOngoingCountdown = !!currentEvent;
+      html += `
+        <div class="card-hourglass-divider">
+          <i class="fas fa-hourglass-end ${hasOngoingCountdown ? 'hourglass-spinner' : 'hourglass-static'}"></i>
+        </div>`;
+
+      // RIGHT SIDE: UPCOMING
+      if (upcomingEvent && upcomingEvent.daysUntil <= 6) {
+        const eventDate = new Date(upcomingEvent.startDate);
+        const today = new Date(); today.setHours(0, 0, 0, 0);
+        const diffDays = Math.ceil((eventDate - today) / (1000 * 60 * 60 * 24));
+        
+        let dateLabel = '';
+        if (diffDays === 0) dateLabel = 'Today';
+        else if (diffDays === 1) dateLabel = 'Tomorrow';
+        else {
+          const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+          dateLabel = dayNames[eventDate.getDay()];
+        }
+
+        html += `
+          <div class="card-section">
+            <div class="card-section-label">Upcoming</div>
+            <div class="card-section-value" style="color: #ffd700;">${upcomingEvent.startTime}</div>
+            <div class="card-section-title">${upcomingEvent.title}</div>
+            <div class="card-section-date">${dateLabel}</div>
+          </div>`;
+      } else {
+        html += `
+          <div class="card-section">
+            <div class="card-section-label">No Upcoming</div>
+            <div class="card-section-value">—</div>
+            <div class="card-section-title">Events scheduled</div>
+          </div>`;
+      }
+
+      html += `</div>`;
+
+      html += `
+        <div class="alarm-card">
+          <div class="alarm-icon" title="View alarms">
+            <i class="fas fa-bell" id="alarmIcon" style="cursor:pointer; font-size:48px; ${AppData.settings.notifications.enabled ? '' : 'opacity:0.45;'}" onclick="showAlarmPanel()"></i>
+          </div>
+          <div class="alarm-label">Alarms</div>
+          <div id="alarmStatus" class="alarm-status"><span id="alarmStatusToggle" class="status-toggle" onclick="toggleNotifications()">${AppData.settings.notifications.enabled ? 'On' : 'Off'}</span></div>
+        </div>`;
+
+      container.innerHTML = html;
+    }
+
+    function updateCountdown(endTimeStr) {
+      if (countdownInterval) clearInterval(countdownInterval);
+      countdownInterval = setInterval(() => {
+        const now = new Date();
+        const [hours, minutes] = endTimeStr.split(':').map(Number);
+        const end = new Date(now);
+        end.setHours(hours, minutes, 0, 0);
+        if (end < now) end.setDate(end.getDate() + 1);
+
+        const totalSeconds = Math.max(0, (end - now) / 1000);
+        if (totalSeconds === 0) {
+          clearInterval(countdownInterval);
+          renderDashboard();
+          return;
+        }
+
+        const h = Math.floor(totalSeconds / 3600);
+        const m = Math.floor((totalSeconds % 3600) / 60);
+        const s = Math.floor(totalSeconds % 60);
+
+        const el = document.getElementById('countdown');
+        if (el) {
+          el.textContent = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        }
+      }, 1000);
+    }
+
+    function renderAlerts() {
+      const container = document.getElementById('alertContainer');
+      if (AppData.conflicts.length > 0) {
+        container.innerHTML = AppData.conflicts.map(c => `
+          <div class="alert">
+            <div class="alert-icon">⚠️</div>
+            <div class="alert-content">
+              <h3>${c.title}</h3>
+              <p>${c.description}</p>
+            </div>
+            <button class="resolve-btn" onclick="window.location.href='calendar.html'">Resolve</button>
+          </div>
+        `).join('');
+      }
+    }
+
+    function renderTodaySchedule() {
+      const container = document.getElementById('todaySchedule');
+      const events = AppData.getTodayEvents();
+
+      if (events.length === 0) {
+        container.innerHTML = '<p class="no-events">Nothing scheduled for today.</p>';
+        return;
+      }
+
+      container.innerHTML = events.map(event => {
+        const indicatorColor = event.type === 'personal' ? '#c084fc' : event.type === 'work' ? '#3b82f6' : '#4a9eff';
+        const typeIcon = event.type === 'school' ? 'fa-graduation-cap' : event.type === 'personal' ? 'fa-user' : 'fa-briefcase';
+        return `
+          <div class="event-item ${event.type}">
+            <div class="event-header">
+              <div class="event-title">
+                <div class="event-indicator" style="background:${indicatorColor}"></div>
+                <h3>${event.title}</h3>
+              </div>
+              <div class="event-badge ${event.type}">${event.type}</div>
+            </div>
+            <div class="event-details">
+              <p>${event.fullTitle}</p>
+              <p><i class="fas ${typeIcon}"></i> ${event.location}</p>
+              <p class="event-time"><i class="far fa-clock"></i> ${event.startTime} - ${event.endTime}</p>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    function renderUpcomingTasks() {
+      const container = document.getElementById('upcomingTasks');
+      const tasks = AppData.getUpcomingTasks(7);
+
+      if (tasks.length === 0) {
+        container.innerHTML = '<p class="no-events">No upcoming tasks.</p>';
+        return;
+      }
+
+      container.innerHTML = tasks.map(task => {
+        const indicatorColor = task.type === 'personal' ? '#c084fc' : task.type === 'work' ? '#3b82f6' : '#4a9eff';
+        const typeIcon = task.type === 'school' ? 'fa-graduation-cap' : task.type === 'personal' ? 'fa-user' : 'fa-briefcase';
+        return `
+          <div class="event-item ${task.type}">
+            <div class="event-header">
+              <div class="event-title">
+                <div class="event-indicator" style="background:${indicatorColor}"></div>
+                <h3>${task.title}</h3>
+              </div>
+              <div class="event-badge ${task.type}">${task.type}</div>
+            </div>
+            <div class="event-details">
+              <p>${task.fullTitle}</p>
+              <p><i class="fas ${typeIcon}"></i> ${task.location}</p>
+              <p class="event-time"><i class="fas fa-calendar-check"></i> Due: ${new Date(task.dueDate || task.startDate).toLocaleDateString('en-US', { month: 'numeric', day: 'numeric', year: 'numeric' })} at ${task.startTime}</p>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    /* Alarm panel and controls */
+    function toggleNotifications() {
+      AppData.settings.notifications.enabled = !AppData.settings.notifications.enabled;
+      renderDashboard();
+      // update alarm status text if panel is open
+      const statusEl = document.getElementById('alarmStatusToggle') || document.getElementById('alarmStatus');
+      if (statusEl) statusEl.textContent = AppData.settings.notifications.enabled ? 'On' : 'Off';
+      saveAppDataToStorage();
+      renderAlarmPanel();
+      const nspan = document.getElementById('ctrl-notifications'); if (nspan) nspan.textContent = AppData.settings.notifications.enabled ? 'On' : 'Off';
+    }
+
+    function toggleSound() {
+      AppData.settings.notifications.sound = !AppData.settings.notifications.sound;
+      renderAlarmPanel();
+      saveAppDataToStorage();
+      const sspan = document.getElementById('ctrl-sound'); if (sspan) sspan.textContent = AppData.settings.notifications.sound ? 'On' : 'Off';
+    }
+
+    function toggleVibrate() {
+      AppData.settings.notifications.vibrate = !AppData.settings.notifications.vibrate;
+      renderAlarmPanel();
+      saveAppDataToStorage();
+      const vspan = document.getElementById('ctrl-vibrate'); if (vspan) vspan.textContent = AppData.settings.notifications.vibrate ? 'On' : 'Off';
+    }
+
+    function playSampleSound() {
+      // simple beep via WebAudio
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type = 'sine';
+        o.frequency.value = 880;
+        g.gain.value = 0.05;
+        o.connect(g); g.connect(ctx.destination);
+        o.start();
+        setTimeout(() => { o.stop(); ctx.close(); }, 300);
+      } catch (e) {
+        console.warn('Audio not supported', e);
+      }
+
+      if (AppData.settings.notifications.vibrate && navigator.vibrate) {
+        navigator.vibrate([200, 100, 200]);
+      }
+    }
+
+    let editingAlarmId = null;
+
+    function showAlarmPanel() {
+      // create full-screen overlay panel
+      let overlay = document.getElementById('alarmOverlay');
+      if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'alarmOverlay';
+        overlay.className = 'alarm-overlay';
+        overlay.innerHTML = `
+          <div class="alarm-overlay-panel">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+              <h3 style="display:flex;gap:8px;align-items:center"><i class="fas fa-bell"></i> Alarms</h3>
+              <div>
+                <button class="resolve-btn" onclick="closeAlarmPanel()">Close</button>
+              </div>
+            </div>
+            <div style="margin-bottom:10px;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+              <div style="font-size:14px;opacity:0.95">Notifications: <span id="ctrl-notifications" onclick="toggleNotifications()" style="cursor:pointer;font-weight:700;color:#4a9eff">${AppData.settings.notifications.enabled ? 'On' : 'Off'}</span></div>
+              <div style="font-size:14px;opacity:0.95">Sound: <span id="ctrl-sound" onclick="toggleSound()" style="cursor:pointer;font-weight:700;color:#4a9eff">${AppData.settings.notifications.sound ? 'On' : 'Off'}</span></div>
+              <div style="font-size:14px;opacity:0.95">Vibrate: <span id="ctrl-vibrate" onclick="toggleVibrate()" style="cursor:pointer;font-weight:700;color:#4a9eff">${AppData.settings.notifications.vibrate ? 'On' : 'Off'}</span></div>
+              <button class="resolve-btn" onclick="playSampleSound()">Play Sample</button>
+            </div>
+            <div id="alarmListContainer"></div>
+            <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end">
+              <button class="resolve-btn" onclick="addAlarm()">Add Alarm</button>
+            </div>
+          </div>`;
+        document.body.appendChild(overlay);
+      }
+      overlay.classList.add('active');
+      editingAlarmId = null;
+      renderAlarmPanel();
+    }
+
+    function closeAlarmPanel() {
+      const overlay = document.getElementById('alarmOverlay');
+      if (overlay) overlay.classList.remove('active');
+    }
+
+    function renderAlarmPanel() {
+      const container = document.getElementById('alarmListContainer');
+      if (!container) return;
+      if (!AppData.alarms || AppData.alarms.length === 0) {
+        container.innerHTML = '<p class="no-events">No alarms. Click Add Alarm to create one.</p>';
+        return;
+      }
+
+      container.innerHTML = AppData.alarms.map(a => {
+        if (editingAlarmId === a.id) {
+          return `
+            <div class="alarm-row">
+              <div class="left">
+                <input type="time" id="edit-time-${a.id}" value="${a.time}">
+                <input type="text" id="edit-label-${a.id}" value="${escapeHtml(a.label)}">
+              </div>
+              <div class="alarm-actions">
+                <button class="resolve-btn" onclick="saveEditAlarm(${a.id})">Save</button>
+                <button class="resolve-btn" onclick="cancelEditAlarm()">Cancel</button>
+              </div>
+            </div>`;
+        }
+
+        return `
+          <div class="alarm-row">
+            <div class="left">
+              <div style="font-weight:700">${a.time}</div>
+              <div style="opacity:0.85">${escapeHtml(a.label)}</div>
+            </div>
+            <div class="alarm-actions">
+              <button class="resolve-btn" onclick="toggleAlarm(${a.id})">${a.enabled ? 'On' : 'Off'}</button>
+              <button class="resolve-btn" onclick="startEditAlarm(${a.id})">Edit</button>
+              <button class="resolve-btn" onclick="removeAlarm(${a.id})">Delete</button>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+    }
+
+    function startEditAlarm(id) {
+      editingAlarmId = id;
+      renderAlarmPanel();
+    }
+
+    function saveEditAlarm(id) {
+      const timeEl = document.getElementById(`edit-time-${id}`);
+      const labelEl = document.getElementById(`edit-label-${id}`);
+      if (!timeEl || !labelEl) return;
+      const a = AppData.alarms.find(x => x.id === id);
+      if (!a) return;
+      a.time = timeEl.value;
+      a.label = labelEl.value;
+      editingAlarmId = null;
+      renderAlarmPanel();
+      saveAppDataToStorage();
+    }
+
+    function cancelEditAlarm() {
+      editingAlarmId = null;
+      renderAlarmPanel();
+    }
+
+    function addAlarm() {
+      const time = prompt('Alarm time (HH:MM)', '09:00');
+      if (!time) return;
+      const label = prompt('Label for alarm', 'New Alarm') || 'Alarm';
+      const id = Date.now();
+      AppData.alarms.push({ id, time, label, enabled: true });
+      renderAlarmPanel();
+      saveAppDataToStorage();
+    }
+
+    function removeAlarm(id) {
+      AppData.alarms = AppData.alarms.filter(a => a.id !== id);
+      renderAlarmPanel();
+      saveAppDataToStorage();
+    }
+
+    function toggleAlarm(id) {
+      const a = AppData.alarms.find(x => x.id === id);
+      if (!a) return;
+      a.enabled = !a.enabled;
+      renderAlarmPanel();
+      saveAppDataToStorage();
+    }
+
+    document.getElementById('profileIcon').addEventListener('click', () => {
+      window.location.href = 'account.html';
+    });
+
+    // Global handlers: Escape to close overlays and click-outside to close
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeAlarmPanel();
+        const f = document.getElementById('firingOverlay');
+        if (f) { f.classList.remove('active'); stopAlarmSound(); }
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      // if user clicks on the overlay background (not the panel), close it
+      if (e.target && e.target.id === 'alarmOverlay') closeAlarmPanel();
+      if (e.target && e.target.id === 'firingOverlay') { dismissFiringAlarm(); }
+    });
+
+    window.addEventListener('DOMContentLoaded', renderPage);
+  </script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PlanEase - Login</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="auth-container">
+    <a href="splash.html" class="back-link">
+      <i class="fas fa-arrow-left"></i>
+      Back
+    </a>
+
+    <div class="auth-form">
+      <h2>LOGIN</h2>
+      <p class="subtitle">Sign in to continue planning</p>
+
+      <div class="error-message" id="errorMessage">
+        <i class="fas fa-exclamation-circle"></i> Invalid email or password!
+      </div>
+      
+      <form id="loginForm">
+        <div class="form-group">
+          <label>EMAIL</label>
+          <input type="email" id="email" placeholder="Enter your email" required>
+        </div>
+        
+        <div class="form-group">
+          <label>PASSWORD</label>
+          <div class="input-wrapper">
+            <input type="password" id="password" placeholder="Enter your password" required>
+            <span class="toggle-password" onclick="togglePassword()">
+              <i class="far fa-eye" id="password-icon"></i>
+            </span>
+          </div>
+        </div>
+        
+        <div class="forgot-password">
+          <a href="#">Forgot Password?</a>
+        </div>
+        
+        <button type="submit" class="submit-btn">Sign in</button>
+      </form>
+      
+      <div class="auth-link">
+        New here? <a href="create-account.html">Create an account</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Modal -->
+  <div class="modal" id="successModal">
+    <div class="modal-content">
+      <div class="modal-icon">
+        <i class="fas fa-check-circle"></i>
+      </div>
+      <h3>Login Successful!</h3>
+      <p>Welcome back! Redirecting you to your dashboard...</p>
+      <button class="modal-btn" id="continueBtn">Continue</button>
+    </div>
+  </div>
+
+  <script>
+    function togglePassword() {
+      const passwordInput = document.getElementById('password');
+      const icon = document.getElementById('password-icon');
+      
+      if (passwordInput.getAttribute('type') === 'password') {
+        passwordInput.setAttribute('type', 'text');
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      } else {
+        passwordInput.setAttribute('type', 'password');
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      }
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const errorMessage = document.getElementById('errorMessage');
+
+      // Hardcoded credentials
+      const validEmail = 'dalvah@gmail.com';
+      const validPassword = '11001';
+
+      // Remove error message if showing
+      errorMessage.classList.remove('show');
+
+      if (email === validEmail && password === validPassword) {
+        // Show success modal
+        document.getElementById('successModal').classList.add('active');
+        
+        // Auto redirect after 2 seconds
+        setTimeout(() => {
+          window.location.href = 'home.html';
+        }, 2000);
+      } else {
+        // Show error message
+        errorMessage.classList.add('show');
+        
+        // Shake the form
+        const form = document.querySelector('.auth-form');
+        form.style.animation = 'none';
+        setTimeout(() => {
+          form.style.animation = 'shake 0.5s ease';
+        }, 10);
+      }
+    });
+
+    document.getElementById('continueBtn').addEventListener('click', function() {
+      window.location.href = 'home.html';
+    });
+  </script>
+</body>
+</html>

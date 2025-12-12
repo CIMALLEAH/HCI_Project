@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PlanEase - Loading</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="floating-shapes">
+    <div class="shape"></div>
+    <div class="shape"></div>
+    <div class="shape"></div>
+  </div>
+
+  <!-- Loading Screen -->
+  <div class="loading-screen" id="loadingScreen">
+    <div class="splash-icon">
+      <img src="assets/logo.png" alt="PlanEase Logo" class="logo-img">
+    </div>
+
+    <div class="splash-logo">PlanEase</div>
+
+    <div class="progress-bar">
+      <div class="progress-fill"></div>
+    </div>
+
+    <div class="progress-text">0%</div>
+  </div>
+
+  <!-- Main Splash Screen -->
+  <div class="splash-container" id="splashContainer">
+    <div class="logo-wrapper">
+      <div class="logo-image">
+        <img src="assets/logo.png" alt="PlanEase Logo">
+      </div>
+      <h1>PLAN EASE</h1>
+      <p class="tagline">Plan with Ease</p>
+    </div>
+
+    <div class="features">
+      <div class="feature">
+        <i class="fas fa-calendar-alt"></i>
+        <p>Smart Calendar</p>
+      </div>
+      <div class="feature">
+        <i class="fas fa-tasks"></i>
+        <p>Task Manager</p>
+      </div>
+      <div class="feature">
+        <i class="fas fa-bell"></i>
+        <p>Reminders</p>
+      </div>
+    </div>
+
+    <div class="button-group">
+      <a href="create-account.html" class="btn btn-primary">
+        <i class="fas fa-user-plus"></i>
+        Sign up
+      </a>
+      <a href="login.html" class="btn btn-secondary">
+        <i class="fas fa-sign-in-alt"></i>
+        Login
+      </a>
+    </div>
+  </div>
+
+  <script>
+    let progress = 0;
+    const text = document.querySelector(".progress-text");
+    const fill = document.querySelector(".progress-fill");
+    const loadingScreen = document.getElementById("loadingScreen");
+    const splashContainer = document.getElementById("splashContainer");
+
+    const interval = setInterval(() => {
+      progress++;
+      text.textContent = progress + "%";
+      fill.style.width = progress + "%";
+
+      if (progress >= 100) {
+        clearInterval(interval);
+
+        setTimeout(() => {
+          // Hide loading screen
+          loadingScreen.classList.add('hidden');
+          
+          // Show main splash screen
+          setTimeout(() => {
+            splashContainer.classList.add('visible');
+          }, 100);
+        }, 300);
+      }
+    }, 15);
+  </script>
+</body>
+</html>

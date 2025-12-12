@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PlanEase - Calendar</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <div class="header">
+      <div class="logo">
+        <div class="logo-img">
+          <img src="assets/logo.png" alt="PlanEase Logo">
+        </div>
+        <div class="logo-text">
+          <h1>PLAN EASE</h1>
+          <p>Plan with Ease</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="notification-btn" onclick="toggleNotifications()">
+          <i class="fas fa-list"></i>
+          <div class="notification-dot" id="notificationDot"></div>
+        </div>
+        <div class="profile-icon" onclick="window.location.href='account.html'">
+          <img src="assets/profile_pic.png" alt="Profile">
+        </div>
+      </div>
+    </div>
+
+    <div class="notification-panel" id="notificationPanel">
+      <h3><i class="fas fa-bell"></i> Notifications</h3>
+      <div id="notificationList"></div>
+    </div>
+
+    <div class="content">
+      <div class="planner-header">
+        <h1>Calendar</h1>
+        <div class="view-toggle">
+          <button class="view-btn active" id="monthViewBtn" onclick="switchView('month')">Month</button>
+          <button class="view-btn" id="weekViewBtn" onclick="switchView('week')">Week</button>
+        </div>
+      </div>
+
+      <div class="color-legend">
+        <div class="legend-item">
+          <div class="legend-color school"></div>
+          <span>School</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color personal"></div>
+          <span>Personal</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color work"></div>
+          <span>Work</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color mixed"></div>
+          <span>Mixed</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color conflict"></div>
+          <span>Conflict</span>
+        </div>
+      </div>
+
+      <div class="month-nav">
+        <button class="nav-btn" onclick="changeView(-1)">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <div class="current-month" id="viewLabel" onclick="openMonthPicker()"></div>
+        <button class="nav-btn" onclick="changeView(1)">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+
+      <div class="calendar-grid">
+        <div class="weekdays" id="weekdaysContainer">
+          <div class="weekday">Sun</div>
+          <div class="weekday">Mon</div>
+          <div class="weekday">Tue</div>
+          <div class="weekday">Wed</div>
+          <div class="weekday">Thu</div>
+          <div class="weekday">Fri</div>
+          <div class="weekday">Sat</div>
+        </div>
+        <div class="days" id="calendarDays"></div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <i class="fas fa-list-alt"></i>
+          <h2 id="scheduleTitle">This Month's Schedule</h2>
+        </div>
+        <div class="planner-list" id="scheduleList"></div>
+      </div>
+    </div>
+
+    <div class="bottom-nav">
+      <a href="home.html" class="nav-item">
+        <div class="nav-icon"><i class="fas fa-home"></i></div>
+        <div class="nav-label">Home</div>
+      </a>
+      <a href="calendar.html" class="nav-item active">
+        <div class="nav-icon"><i class="far fa-calendar-alt"></i></div>
+        <div class="nav-label">Calendar</div>
+      </a>
+      <a href="planner.html" class="nav-item">
+        <div class="nav-icon"><i class="fas fa-book"></i></div>
+        <div class="nav-label">Planner</div>
+      </a>
+      <a href="account.html" class="nav-item">
+        <div class="nav-icon"><i class="far fa-user"></i></div>
+        <div class="nav-label">Account</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- Month/Year Picker Modal -->
+  <div class="picker-modal" id="pickerModal">
+    <div class="picker-content">
+      <h2>Select Month & Year</h2>
+      <div class="picker-selects">
+        <select id="monthSelect">
+          <option value="0">January</option>
+          <option value="1">February</option>
+          <option value="2">March</option>
+          <option value="3">April</option>
+          <option value="4">May</option>
+          <option value="5">June</option>
+          <option value="6">July</option>
+          <option value="7">August</option>
+          <option value="8">September</option>
+          <option value="9">October</option>
+          <option value="10">November</option>
+          <option value="11">December</option>
+        </select>
+        <select id="yearSelect">
+          <!-- Populated by JS -->
+        </select>
+      </div>
+      <div class="picker-actions">
+        <button class="picker-btn cancel" onclick="closeMonthPicker()">Cancel</button>
+        <button class="picker-btn confirm" onclick="confirmMonthPicker()">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentMonth = new Date().getMonth();
+    let currentYear = new Date().getFullYear();
+    let currentWeekStart = null;
+    let viewMode = 'month'; // 'month' or 'week'
+
+    const AppData = {
+      user: {
+        firstName: 'Damian',
+        lastName: 'Alvah',
+        email: 'dalvah@gmail.com'
+      },
+      events: [
+        {
+          id: 1,
+          kind: 'event',
+          category: 'school',
+          type: 'school',
+          title: 'IT 321',
+          fullTitle: 'Human-Computer Interaction',
+          location: 'Online',
+          date: '2025-12-06',
+          startDate: '2025-12-06',
+          startTime: '10:00',
+          endDate: '2025-12-06',
+          endTime: '13:30',
+          priority: 'medium',
+          reminder: '10m',
+          completed: false
+        },
+        {
+          id: 2,
+          kind: 'event',
+          category: 'school',
+          type: 'school',
+          title: 'CS 311',
+          fullTitle: 'Automata Theory and Formal Languages',
+          location: 'Online',
+          date: '2025-12-06',
+          startDate: '2025-12-06',
+          startTime: '15:00',
+          endDate: '2025-12-06',
+          endTime: '16:30',
+          priority: 'medium',
+          reminder: '30m',
+          completed: false
+        },
+        {
+          id: 8,
+          kind: 'task',
+          category: 'school',
+          type: 'school',
+          title: 'Submit IT 321 report',
+          fullTitle: 'Submit final report for HCI',
+          location: 'Online',
+          date: '2025-12-05',
+          startDate: '2025-12-05',
+          dueDate: '2025-12-05',
+          startTime: '23:59',
+          priority: 'high',
+          reminder: '1d',
+          completed: false
+        },
+        {
+          id: 3,
+          kind: 'event',
+          category: 'personal',
+          type: 'personal',
+          title: 'Dental Appointment',
+          fullTitle: 'Regular checkup',
+          location: 'Dental Clinic',
+          date: '2025-12-07',
+          startDate: '2025-12-07',
+          startTime: '14:00',
+          endDate: '2025-12-07',
+          endTime: '15:00',
+          priority: 'medium',
+          reminder: '1d',
+          completed: false
+        },
+        {
+          id: 4,
+          kind: 'event',
+          category: 'work',
+          type: 'work',
+          title: 'Team Meeting',
+          fullTitle: 'Weekly sync meeting',
+          location: 'Office',
+          date: '2025-12-08',
+          startDate: '2025-12-08',
+          startTime: '10:00',
+          endDate: '2025-12-08',
+          endTime: '11:00',
+          priority: 'high',
+          reminder: '30m',
+          completed: false
+        }
+      ],
+      conflicts: [],
+
+      formatDate(dateString) {
+        const d = new Date(dateString);
+        const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
+        return d.toLocaleDateString('en-US', options);
+      },
+
+      getFirstDayOfMonth(year, month) {
+        return new Date(year, month, 1).getDay();
+      },
+
+      getDaysInMonth(year, month) {
+        return new Date(year, month + 1, 0).getDate();
+      },
+
+      getEventsByDate(dateString) {
+        return this.events.filter(e => (e.date || e.startDate) === dateString);
+      },
+
+      hasConflict(dateString) {
+        const events = this.getEventsByDate(dateString);
+        if (events.length < 2) return false;
+        
+        for (let i = 0; i < events.length; i++) {
+          for (let j = i + 1; j < events.length; j++) {
+            const e1Start = this.parseTime(events[i].startTime);
+            const e1End = this.parseTime(events[i].endTime);
+            const e2Start = this.parseTime(events[j].startTime);
+            const e2End = this.parseTime(events[j].endTime);
+            
+            if ((e1Start < e2End && e1End > e2Start)) {
+              return true;
+            }
+          }
+        }
+        return false;
+      },
+
+      parseTime(timeStr) {
+        if (!timeStr) return 0;
+        const [h, m] = timeStr.split(':').map(Number);
+        return h * 60 + m;
+      },
+
+      getCategoriesForDate(dateString) {
+        const events = this.getEventsByDate(dateString);
+        const categories = new Set(events.map(e => e.category));
+        return Array.from(categories);
+      },
+
+      getWeekNumber(date) {
+        const d = new Date(date);
+        d.setHours(0, 0, 0, 0);
+        d.setDate(d.getDate() + 4 - (d.getDay() || 7));
+        const yearStart = new Date(d.getFullYear(), 0, 1);
+        return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+      }
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      populateYearSelect();
+      initializeWeekView();
+      renderPage();
+    });
+
+    function populateYearSelect() {
+      const yearSelect = document.getElementById('yearSelect');
+      const currentYear = new Date().getFullYear();
+      for (let year = currentYear - 10; year <= currentYear + 10; year++) {
+        const option = document.createElement('option');
+        option.value = year;
+        option.textContent = year;
+        yearSelect.appendChild(option);
+      }
+    }
+
+    function initializeWeekView() {
+      const today = new Date();
+      const dayOfWeek = today.getDay();
+      currentWeekStart = new Date(today);
+      currentWeekStart.setDate(today.getDate() - dayOfWeek);
+      currentWeekStart.setHours(0, 0, 0, 0);
+    }
+
+    function switchView(mode) {
+      viewMode = mode;
+      document.getElementById('monthViewBtn').classList.toggle('active', mode === 'month');
+      document.getElementById('weekViewBtn').classList.toggle('active', mode === 'week');
+      
+      if (mode === 'week') {
+        initializeWeekView();
+      }
+      
+      renderCalendar();
+      renderSchedule();
+    }
+
+    function changeView(delta) {
+      if (viewMode === 'month') {
+        currentMonth += delta;
+        if (currentMonth < 0) {
+          currentMonth = 11;
+          currentYear--;
+        } else if (currentMonth > 11) {
+          currentMonth = 0;
+          currentYear++;
+        }
+      } else {
+        currentWeekStart.setDate(currentWeekStart.getDate() + (delta * 7));
+      }
+      renderCalendar();
+      renderSchedule();
+    }
+
+    function openMonthPicker() {
+      if (viewMode === 'week') return;
+      document.getElementById('monthSelect').value = currentMonth;
+      document.getElementById('yearSelect').value = currentYear;
+      document.getElementById('pickerModal').classList.add('active');
+    }
+
+    function closeMonthPicker() {
+      document.getElementById('pickerModal').classList.remove('active');
+    }
+
+    function confirmMonthPicker() {
+      currentMonth = parseInt(document.getElementById('monthSelect').value);
+      currentYear = parseInt(document.getElementById('yearSelect').value);
+      closeMonthPicker();
+      renderCalendar();
+      renderSchedule();
+    }
+
+    function renderPage() {
+      renderHeader();
+      renderCalendar();
+      renderSchedule();
+      renderNotifications();
+    }
+
+    function renderHeader() {
+      const hasConflicts = AppData.conflicts && AppData.conflicts.length > 0;
+      document.getElementById('notificationDot').style.display = hasConflicts ? 'block' : 'none';
+    }
+
+    function renderCalendar() {
+      const daysContainer = document.getElementById('calendarDays');
+      daysContainer.innerHTML = '';
+      
+      if (viewMode === 'month') {
+        renderMonthView(daysContainer);
+      } else {
+        renderWeekView(daysContainer);
+      }
+    }
+
+    function renderMonthView(daysContainer) {
+      const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'];
+      document.getElementById('viewLabel').textContent = `${monthNames[currentMonth]} ${currentYear}`;
+
+      const firstDay = AppData.getFirstDayOfMonth(currentYear, currentMonth);
+      const daysInMonth = AppData.getDaysInMonth(currentYear, currentMonth);
+
+      for (let i = 0; i < firstDay; i++) {
+        daysContainer.innerHTML += '<div class="day"></div>';
+      }
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const date = new Date(currentYear, currentMonth, day);
+        const dateString = date.toISOString().split('T')[0];
+        let classes = 'day';
+        
+        if (date.toDateString() === new Date().toDateString()) {
+          classes += ' today';
+        }
+        
+        const categories = AppData.getCategoriesForDate(dateString);
+        const hasConflict = AppData.hasConflict(dateString);
+        
+        if (hasConflict) {
+          classes += ' conflict';
+        } else if (categories.length > 0) {
+          if (categories.length === 1) {
+            classes += ` ${categories[0]}-only`;
+          } else if (categories.length === 2) {
+            classes += ` ${categories.sort().join('-')}`;
+          } else if (categories.length === 3) {
+            classes += ' all-categories';
+          }
+        }
+        
+        daysContainer.innerHTML += `<div class="${classes}">${day}</div>`;
+      }
+    }
+
+    function renderWeekView(daysContainer) {
+      const weekEnd = new Date(currentWeekStart);
+      weekEnd.setDate(currentWeekStart.getDate() + 6);
+      
+      const weekNum = AppData.getWeekNumber(currentWeekStart);
+      const year = currentWeekStart.getFullYear();
+      document.getElementById('viewLabel').textContent = `Week ${weekNum}, ${year}`;
+
+      for (let i = 0; i < 7; i++) {
+        const date = new Date(currentWeekStart);
+        date.setDate(currentWeekStart.getDate() + i);
+        const dateString = date.toISOString().split('T')[0];
+        let classes = 'day';
+        
+        if (date.toDateString() === new Date().toDateString()) {
+          classes += ' today';
+        }
+        
+        const categories = AppData.getCategoriesForDate(dateString);
+        const hasConflict = AppData.hasConflict(dateString);
+        
+        if (hasConflict) {
+          classes += ' conflict';
+        } else if (categories.length > 0) {
+          if (categories.length === 1) {
+            classes += ` ${categories[0]}-only`;
+          } else if (categories.length === 2) {
+            classes += ` ${categories.sort().join('-')}`;
+          } else if (categories.length === 3) {
+            classes += ' all-categories';
+          }
+        }
+        
+        daysContainer.innerHTML += `<div class="${classes}">${date.getDate()}</div>`;
+      }
+    }
+
+    function renderSchedule() {
+      const container = document.getElementById('scheduleList');
+      const title = document.getElementById('scheduleTitle');
+      container.innerHTML = '';
+      
+      let events;
+      if (viewMode === 'month') {
+        title.textContent = "This Month's Schedule";
+        events = AppData.events.filter(event => {
+          const eventDate = new Date(event.date || event.startDate);
+          return eventDate.getFullYear() === currentYear && eventDate.getMonth() === currentMonth;
+        });
+      } else {
+        title.textContent = "This Week's Schedule";
+        const weekEnd = new Date(currentWeekStart);
+        weekEnd.setDate(currentWeekStart.getDate() + 6);
+        weekEnd.setHours(23, 59, 59, 999);
+        
+        events = AppData.events.filter(event => {
+          const eventDate = new Date(event.date || event.startDate);
+          return eventDate >= currentWeekStart && eventDate <= weekEnd;
+        });
+      }
+
+      if (events.length === 0) {
+        container.innerHTML = `<p class="no-events">No events scheduled for this ${viewMode}.</p>`;
+        return;
+      }
+      
+      events.sort((a, b) => new Date(a.date || a.startDate) - new Date(b.date || b.startDate));
+
+      events.forEach(event => {
+        const indicatorColor = event.type === 'personal' ? '#9b59b6' : 
+                               event.type === 'work' ? '#1d9a66' : '#4a9eff';
+        const typeIcon = event.type === 'school' ? 'fa-graduation-cap' : 
+                        event.type === 'personal' ? 'fa-user' : 'fa-briefcase';
+        
+        const eventDate = new Date(event.date || event.startDate);
+        const formattedDate = eventDate.toLocaleDateString('en-US', { 
+          month: 'short', 
+          day: 'numeric' 
+        });
+        
+        container.innerHTML += `
+          <div class="event-item ${event.type}">
+            <div class="event-header">
+              <div class="event-title">
+                <div class="event-indicator" style="background: ${indicatorColor};"></div>
+                <h3>${event.title}</h3>
+              </div>
+              <div class="event-badge ${event.type}">${formattedDate}</div>
+            </div>
+            <div class="event-details">
+              <p>${event.fullTitle}</p>
+              <p><i class="fas ${typeIcon}"></i> ${event.location}</p>
+              <p class="event-time"><i class="far fa-clock"></i> ${event.startTime} - ${event.endTime || event.startTime}</p>
+            </div>
+          </div>`;
+      });
+    }
+
+    function renderNotifications() {
+      const container = document.getElementById('notificationList');
+      const conflicts = AppData.conflicts || [];
+      container.innerHTML = '';
+
+      if (conflicts.length === 0) {
+        container.innerHTML = '<div class="notification-item">No new notifications</div>';
+        return;
+      }
+
+      conflicts.forEach(conflict => {
+        container.innerHTML += `
+          <div class="notification-item unread">
+            <strong>${conflict.title}</strong><br>
+            <small>${conflict.description}</small>
+          </div>
+        `;
+      });
+    }
+
+    function toggleNotifications() {
+      document.getElementById('notificationPanel').classList.toggle('active');
+    }
+
+    document.addEventListener('click', function(e) {
+      const panel = document.getElementById('notificationPanel');
+      const notifBtn = document.querySelector('.notification-btn');
+      const pickerModal = document.getElementById('pickerModal');
+      
+      if (panel.classList.contains('active') && 
+          !panel.contains(e.target) && 
+          !notifBtn.contains(e.target)) {
+        panel.classList.remove('active');
+      }
+
+      if (pickerModal.classList.contains('active') && 
+          e.target === pickerModal) {
+        closeMonthPicker();
+      }
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeMonthPicker();
+      }
+    });
+  </script>
+</body>
+</html>

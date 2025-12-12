@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PlanEase - Account</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <div class="header">
+      <div class="logo">
+        <div class="logo-img">
+          <img src="assets/logo.png" alt="PlanEase Logo">
+        </div>
+        <div class="logo-text">
+          <h1>PLAN EASE</h1>
+          <p>Plan with Ease</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="notification-btn" onclick="toggleNotifications()">
+          <i class="fas fa-list"></i>
+          <div class="notification-dot" id="notificationDot"></div>
+        </div>
+        <div class="profile-icon" onclick="window.location.href='account.html'">
+          <img src="assets/profile_pic.png" alt="Profile" id="profileIconImg" onerror="this.style.display='none'; document.getElementById('profileInitial').style.display='flex';">
+          <div class="initials" id="profileInitial" style="display: none;">D</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="notification-panel" id="notificationPanel">
+      <h3><i class="fas fa-bell"></i> Notifications</h3>
+      <div id="notificationList"></div>
+    </div>
+
+    <div class="content">
+      <div class="planner-header">
+        <h1>Account</h1>
+      </div>
+
+      <div class="profile-section">
+        <div class="profile-avatar">
+          <img src="assets/profile_pic.png" alt="Profile Picture" id="profileImage" onerror="this.style.display='none'; document.getElementById('profileInitialLarge').style.display='flex';">
+          <div class="initials" id="profileInitialLarge" style="display: none;">D</div>
+          <div class="verified-badge" onclick="changeProfilePicture()" title="Change Profile Picture">
+            <i class="fas fa-camera"></i>
+          </div>
+        </div>
+        <div class="profile-name" id="profileName">Damian Alvah</div>
+        <div class="profile-email" id="profileEmail">dalvah@gmail.com</div>
+        <div class="account-created" id="accountCreated">Account Created October 1, 2025</div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-header" onclick="toggleSection(this)">
+          <h2><i class="fas fa-cog"></i> Settings</h2>
+          <span class="expand-icon"><i class="fas fa-chevron-up"></i></span>
+        </div>
+        <div class="settings-content" style="max-height: 1000px;">
+          <div class="subsection-header">
+            <i class="fas fa-user"></i> Account Settings
+          </div>
+          <div class="setting-item" onclick="openEditProfileModal()">
+            <div>
+              <div class="setting-label">Edit Profile</div>
+            </div>
+            <div class="setting-value"><i class="fas fa-chevron-right"></i></div>
+          </div>
+          <div class="setting-item" onclick="openChangePasswordModal()">
+            <div>
+              <div class="setting-label">Change Password</div>
+            </div>
+            <div class="setting-value"><i class="fas fa-chevron-right"></i></div>
+          </div>
+          <div class="setting-item" onclick="openManageAccountModal()">
+            <div>
+              <div class="setting-label">Manage Account</div>
+            </div>
+            <div class="setting-value"><i class="fas fa-chevron-right"></i></div>
+          </div>
+          <div class="setting-item logout-item" onclick="openLogoutModal()">
+            <div>
+              <div class="setting-label"><i class="fas fa-sign-out-alt"></i> Logout</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-header" onclick="toggleSection(this)">
+          <h2><i class="fas fa-bell"></i> Notifications</h2>
+          <span class="expand-icon"><i class="fas fa-chevron-up"></i></span>
+        </div>
+        <div class="settings-content" style="max-height: 1000px;">
+          <div class="setting-item">
+            <div>
+              <div class="setting-label">Enable Notifications</div>
+              <div class="setting-sublabel">Allow app to send notifications</div>
+            </div>
+            <div class="toggle-switch active" id="notifToggle" onclick="toggleSetting('notifications.enabled')">
+              <div class="toggle-slider"></div>
+            </div>
+          </div>
+          <div class="setting-item" onclick="openReminderTimeModal()">
+            <div>
+              <div class="setting-label">Default Reminder Time</div>
+              <div class="setting-sublabel" id="reminderTime">1 hour before</div>
+            </div>
+            <div class="setting-value"><i class="fas fa-chevron-right"></i></div>
+          </div>
+          <div class="setting-item" onclick="openReminderTypeModal()">
+            <div>
+              <div class="setting-label">Reminder Type</div>
+              <div class="setting-sublabel" id="reminderType">Sound & Vibrate</div>
+            </div>
+            <div class="setting-value"><i class="fas fa-chevron-right"></i></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-header" onclick="toggleSection(this)">
+          <h2><i class="fas fa-sliders-h"></i> General Preferences</h2>
+          <span class="expand-icon"><i class="fas fa-chevron-up"></i></span>
+        </div>
+        <div class="settings-content" style="max-height: 1000px;">
+          <div class="setting-item" onclick="openDefaultViewModal()">
+            <div>
+              <div class="setting-label">Default View on Launch</div>
+              <div class="setting-sublabel" id="defaultViewText">Home</div>
+            </div>
+            <div class="setting-value"><i class="fas fa-chevron-right"></i></div>
+          </div>
+          <div class="setting-item" onclick="openTimeFormatModal()">
+            <div>
+              <div class="setting-label">Time Format</div>
+              <div class="setting-sublabel" id="timeFormatText">12-hour (10:00 PM)</div>
+            </div>
+            <div class="setting-value"><i class="fas fa-chevron-right"></i></div>
+          </div>
+          <div class="setting-item" onclick="openDateFormatModal()">
+            <div>
+              <div class="setting-label">Date Format</div>
+              <div class="setting-sublabel" id="dateFormatText">Month DD, YYYY (December 09, 2025)</div>
+            </div>
+            <div class="setting-value"><i class="fas fa-chevron-right"></i></div>
+          </div>
+          <div class="setting-item" onclick="alert('Calendar sync coming soon!')">
+            <div>
+              <div class="setting-label">Auto - Sync Calendar</div>
+            </div>
+            <div class="toggle-switch active" id="syncToggle" onclick="event.stopPropagation();">
+              <div class="toggle-slider"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-nav">
+      <a href="home.html" class="nav-item">
+        <div class="nav-icon"><i class="fas fa-home"></i></div>
+        <div class="nav-label">Home</div>
+      </a>
+      <a href="calendar.html" class="nav-item">
+        <div class="nav-icon"><i class="far fa-calendar-alt"></i></div>
+        <div class="nav-label">Calendar</div>
+      </a>
+      <a href="planner.html" class="nav-item">
+        <div class="nav-icon"><i class="fas fa-book"></i></div>
+        <div class="nav-label">Planner</div>
+      </a>
+      <a href="account.html" class="nav-item active">
+        <div class="nav-icon"><i class="far fa-user"></i></div>
+        <div class="nav-label">Account</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- Modals -->
+  <div class="modal" id="editProfileModal">
+    <div class="modal-content">
+      <div class="modal-icon success">
+        <i class="fas fa-user-edit"></i>
+      </div>
+      <h2>Edit Profile</h2>
+      <label>FIRST NAME</label>
+      <input type="text" class="modal-input" id="editFirstName" placeholder="First Name">
+      <label>LAST NAME</label>
+      <input type="text" class="modal-input" id="editLastName" placeholder="Last Name">
+      <label>EMAIL</label>
+      <input type="email" class="modal-input" id="editEmail" placeholder="Email">
+      <div class="modal-actions">
+        <button class="modal-btn cancel" onclick="closeModal('editProfileModal')">Cancel</button>
+        <button class="modal-btn confirm" onclick="saveProfile()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="changePasswordModal">
+    <div class="modal-content">
+      <div class="modal-icon success">
+        <i class="fas fa-key"></i>
+      </div>
+      <h2>Change Password</h2>
+      <label>CURRENT PASSWORD</label>
+      <input type="password" class="modal-input" id="currentPassword" placeholder="Current Password">
+      <label>NEW PASSWORD</label>
+      <input type="password" class="modal-input" id="newPassword" placeholder="New Password">
+      <label>CONFIRM NEW PASSWORD</label>
+      <input type="password" class="modal-input" id="confirmPassword" placeholder="Confirm New Password">
+      <div class="modal-actions">
+        <button class="modal-btn cancel" onclick="closeModal('changePasswordModal')">Cancel</button>
+        <button class="modal-btn confirm" onclick="savePassword()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="manageAccountModal">
+    <div class="modal-content">
+      <div class="modal-icon success">
+        <i class="fas fa-cogs"></i>
+      </div>
+      <h2>Manage Account</h2>
+      <p style="text-align: left; margin-bottom: 15px;">
+        <strong>Email:</strong> <span id="modalEmail">dalvah@gmail.com</span><br>
+        <strong>Member since:</strong> <span id="modalCreated">October 1, 2025</span>
+      </p>
+      <div class="modal-actions">
+        <button class="modal-btn confirm" onclick="closeModal('manageAccountModal')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="reminderTimeModal">
+    <div class="modal-content">
+      <div class="modal-icon success">
+        <i class="fas fa-clock"></i>
+      </div>
+      <h2>Default Reminder Time</h2>
+      <select class="modal-select" id="reminderTimeSelect">
+        <option value="5 minutes before">5 minutes before</option>
+        <option value="10 minutes before">10 minutes before</option>
+        <option value="15 minutes before">15 minutes before</option>
+        <option value="30 minutes before">30 minutes before</option>
+        <option value="1 hour before" selected>1 hour before</option>
+        <option value="2 hours before">2 hours before</option>
+        <option value="1 day before">1 day before</option>
+      </select>
+      <div class="modal-actions">
+        <button class="modal-btn cancel" onclick="closeModal('reminderTimeModal')">Cancel</button>
+        <button class="modal-btn confirm" onclick="saveReminderTime()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="reminderTypeModal">
+    <div class="modal-content">
+      <div class="modal-icon success">
+        <i class="fas fa-volume-up"></i>
+      </div>
+      <h2>Reminder Type</h2>
+      <p style="text-align: left; margin-bottom: 15px;">Select how you want to be reminded:</p>
+      <div style="text-align: left; margin-bottom: 15px;">
+        <label style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px; cursor: pointer;">
+          <input type="checkbox" id="soundCheck" checked style="width: 20px; height: 20px;">
+          <span>Sound</span>
+        </label>
+        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+          <input type="checkbox" id="vibrateCheck" checked style="width: 20px; height: 20px;">
+          <span>Vibrate</span>
+        </label>
+      </div>
+      <div class="modal-actions">
+        <button class="modal-btn cancel" onclick="closeModal('reminderTypeModal')">Cancel</button>
+        <button class="modal-btn confirm" onclick="saveReminderType()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="defaultViewModal">
+    <div class="modal-content">
+      <div class="modal-icon success">
+        <i class="fas fa-home"></i>
+      </div>
+      <h2>Default View on Launch</h2>
+      <p style="margin-bottom: 15px;">Choose which page to see when you login</p>
+      <select class="modal-select" id="defaultViewSelect">
+        <option value="home.html" selected>Home</option>
+        <option value="calendar.html">Calendar</option>
+        <option value="planner.html">Planner</option>
+        <option value="account.html">Account</option>
+      </select>
+      <div class="modal-actions">
+        <button class="modal-btn cancel" onclick="closeModal('defaultViewModal')">Cancel</button>
+        <button class="modal-btn confirm" onclick="saveDefaultView()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="timeFormatModal">
+    <div class="modal-content">
+      <div class="modal-icon success">
+        <i class="fas fa-clock"></i>
+      </div>
+      <h2>Time Format</h2>
+      <p style="margin-bottom: 15px;">Choose how time is displayed in the app</p>
+      <select class="modal-select" id="timeFormatSelect">
+        <option value="12" selected>12-hour (10:00 PM)</option>
+        <option value="24">24-hour (22:00)</option>
+      </select>
+      <div class="modal-actions">
+        <button class="modal-btn cancel" onclick="closeModal('timeFormatModal')">Cancel</button>
+        <button class="modal-btn confirm" onclick="saveTimeFormat()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="dateFormatModal">
+    <div class="modal-content">
+      <div class="modal-icon success">
+        <i class="fas fa-calendar"></i>
+      </div>
+      <h2>Date Format</h2>
+      <p style="margin-bottom: 15px;">Choose how dates are displayed in the app</p>
+      <select class="modal-select" id="dateFormatSelect">
+        <option value="mdy" selected>Month DD, YYYY (December 09, 2025)</option>
+        <option value="dmy">DD Month YYYY (09 December 2025)</option>
+        <option value="ymd">YYYY-MM-DD (2025-12-09)</option>
+        <option value="short">MM/DD/YYYY (12/09/2025)</option>
+      </select>
+      <div class="modal-actions">
+        <button class="modal-btn cancel" onclick="closeModal('dateFormatModal')">Cancel</button>
+        <button class="modal-btn confirm" onclick="saveDateFormat()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="logoutModal">
+    <div class="modal-content">
+      <div class="modal-icon warning">
+        <i class="fas fa-sign-out-alt"></i>
+      </div>
+      <h3>Confirm Logout</h3>
+      <p>Are you sure you want to log out?</p>
+      <div class="modal-actions">
+        <button class="modal-btn cancel" onclick="closeModal('logoutModal')">Cancel</button>
+        <button class="modal-btn logout" onclick="confirmLogout()">Logout</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="successModal">
+    <div class="modal-content">
+      <div class="modal-icon success">
+        <i class="fas fa-check-circle"></i>
+      </div>
+      <h3 id="successTitle">Success!</h3>
+      <p id="successMessage">Changes saved successfully.</p>
+      <div class="modal-actions">
+        <button class="modal-btn confirm" onclick="closeModal('successModal')">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const AppData = {
+      user: {
+        firstName: 'Damian',
+        lastName: 'Alvah',
+        email: 'dalvah@gmail.com',
+        accountCreated: '2025-10-01'
+      },
+      settings: {
+        notifications: {
+          enabled: true,
+          sound: true,
+          vibrate: true,
+          defaultReminder: '1 hour before'
+        },
+        preferences: {
+          defaultView: 'home.html',
+          timeFormat: '12',
+          dateFormat: 'mdy'
+        }
+      },
+      conflicts: []
+    };
+
+    const STORAGE_KEY = 'planease_account_settings';
+
+    window.addEventListener('DOMContentLoaded', () => {
+      loadSettings();
+      renderPage();
+    });
+
+    function loadSettings() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const data = JSON.parse(saved);
+          AppData.user = { ...AppData.user, ...data.user };
+          AppData.settings = { ...AppData.settings, ...data.settings };
+        }
+      } catch (e) {
+        console.warn('Failed to load settings', e);
+      }
+    }
+
+    function saveSettings() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          user: AppData.user,
+          settings: AppData.settings
+        }));
+      } catch (e) {
+        console.warn('Failed to save settings', e);
+      }
+    }
+
+    function renderPage() {
+      renderHeader();
+      renderProfile();
+      renderSettings();
+      renderNotifications();
+    }
+
+    function renderHeader() {
+      document.getElementById('profileInitial').textContent = AppData.user.firstName.charAt(0);
+      const hasConflicts = AppData.conflicts && AppData.conflicts.length > 0;
+      document.getElementById('notificationDot').style.display = hasConflicts ? 'block' : 'none';
+    }
+
+    function renderProfile() {
+      const user = AppData.user;
+      document.getElementById('profileInitialLarge').textContent = user.firstName.charAt(0);
+      document.getElementById('profileName').textContent = `${user.firstName} ${user.lastName}`;
+      document.getElementById('profileEmail').textContent = user.email;
+      const date = new Date(user.accountCreated);
+      const formatted = date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+      document.getElementById('accountCreated').textContent = `Account Created ${formatted}`;
+    }
+
+    function renderSettings() {
+      const notifToggle = document.getElementById('notifToggle');
+      if (AppData.settings.notifications.enabled) {
+        notifToggle.classList.add('active');
+      } else {
+        notifToggle.classList.remove('active');
+      }
+      document.getElementById('reminderTime').textContent = AppData.settings.notifications.defaultReminder;
+      
+      const types = [];
+      if (AppData.settings.notifications.sound) types.push('Sound');
+      if (AppData.settings.notifications.vibrate) types.push('Vibrate');
+      document.getElementById('reminderType').textContent = types.length > 0 ? types.join(' & ') : 'None';
+
+      // Update preference displays
+      const viewMap = {
+        'home.html': 'Home',
+        'calendar.html': 'Calendar',
+        'planner.html': 'Planner',
+        'account.html': 'Account'
+      };
+      document.getElementById('defaultViewText').textContent = viewMap[AppData.settings.preferences.defaultView] || 'Home';
+
+      const timeFormat = AppData.settings.preferences.timeFormat === '24' ? '24-hour (22:00)' : '12-hour (10:00 PM)';
+      document.getElementById('timeFormatText').textContent = timeFormat;
+
+      const dateFormatMap = {
+        'mdy': 'Month DD, YYYY (December 09, 2025)',
+        'dmy': 'DD Month YYYY (09 December 2025)',
+        'ymd': 'YYYY-MM-DD (2025-12-09)',
+        'short': 'MM/DD/YYYY (12/09/2025)'
+      };
+      document.getElementById('dateFormatText').textContent = dateFormatMap[AppData.settings.preferences.dateFormat] || dateFormatMap.mdy;
+    }
+    
+    function toggleSetting(key) {
+      const keys = key.split('.');
+      let setting = AppData.settings;
+      for (let i = 0; i < keys.length - 1; i++) {
+        setting = setting[keys[i]];
+      }
+      setting[keys[keys.length - 1]] = !setting[keys[keys.length - 1]];
+      
+      saveSettings();
+      showSuccess('Settings Updated', 'Your notification settings have been saved.');
+      renderSettings();
+    }
+
+    function toggleSection(header) {
+      header.classList.toggle('expanded');
+      const content = header.nextElementSibling;
+      if (content.style.maxHeight) {
+        content.style.maxHeight = null;
+      } else {
+        content.style.maxHeight = content.scrollHeight + "px";
+      }
+    }
+    
+    function renderNotifications() {
+      const container = document.getElementById('notificationList');
+      const conflicts = AppData.conflicts || [];
+      container.innerHTML = '';
+
+      if (conflicts.length === 0) {
+        container.innerHTML = '<div class="notification-item">No new notifications</div>';
+        return;
+      }
+
+      conflicts.forEach(conflict => {
+        container.innerHTML += `
+          <div class="notification-item unread">
+            <strong>${conflict.title}</strong><br>
+            <small>${conflict.description}</small>
+          </div>
+        `;
+      });
+    }
+
+    function toggleNotifications() {
+      document.getElementById('notificationPanel').classList.toggle('active');
+    }
+
+    function changeProfilePicture() {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.onchange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            const profileImg = document.getElementById('profileImage');
+            const headerImg = document.getElementById('profileIconImg');
+            if (profileImg) {
+              profileImg.src = event.target.result;
+              profileImg.style.display = 'block';
+              document.getElementById('profileInitialLarge').style.display = 'none';
+            }
+            if (headerImg) {
+              headerImg.src = event.target.result;
+              headerImg.style.display = 'block';
+              document.getElementById('profileInitial').style.display = 'none';
+            }
+            showSuccess('Profile Picture Updated', 'Your profile picture has been changed successfully!');
+          };
+          reader.readAsDataURL(file);
+        }
+      };
+      input.click();
+    }
+
+    // Modal functions
+    function openEditProfileModal() {
+      document.getElementById('editFirstName').value = AppData.user.firstName;
+      document.getElementById('editLastName').value = AppData.user.lastName;
+      document.getElementById('editEmail').value = AppData.user.email;
+      document.getElementById('editProfileModal').classList.add('active');
+    }
+
+    function saveProfile() {
+      const firstName = document.getElementById('editFirstName').value.trim();
+      const lastName = document.getElementById('editLastName').value.trim();
+      const email = document.getElementById('editEmail').value.trim();
+
+      if (!firstName || !lastName || !email) {
+        alert('Please fill in all fields');
+        return;
+      }
+
+      if (!email.includes('@')) {
+        alert('Please enter a valid email address');
+        return;
+      }
+
+      AppData.user.firstName = firstName;
+      AppData.user.lastName = lastName;
+      AppData.user.email = email;
+
+      saveSettings();
+      renderProfile();
+      renderHeader();
+      closeModal('editProfileModal');
+      showSuccess('Profile Updated', 'Your profile information has been saved successfully!');
+    }
+
+    function openChangePasswordModal() {
+      document.getElementById('changePasswordModal').classList.add('active');
+    }
+
+    function openManageAccountModal() {
+      const user = AppData.user;
+      document.getElementById('modalEmail').textContent = user.email;
+      const date = new Date(user.accountCreated);
+      const formatted = date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+      document.getElementById('modalCreated').textContent = formatted;
+      document.getElementById('manageAccountModal').classList.add('active');
+    }
+
+    function openReminderTimeModal() {
+      const currentValue = AppData.settings.notifications.defaultReminder;
+      document.getElementById('reminderTimeSelect').value = currentValue;
+      document.getElementById('reminderTimeModal').classList.add('active');
+    }
+
+    function openReminderTypeModal() {
+      document.getElementById('soundCheck').checked = AppData.settings.notifications.sound;
+      document.getElementById('vibrateCheck').checked = AppData.settings.notifications.vibrate;
+      document.getElementById('reminderTypeModal').classList.add('active');
+    }
+
+    function openDefaultViewModal() {
+      document.getElementById('defaultViewSelect').value = AppData.settings.preferences.defaultView;
+      document.getElementById('defaultViewModal').classList.add('active');
+    }
+
+    function openTimeFormatModal() {
+      document.getElementById('timeFormatSelect').value = AppData.settings.preferences.timeFormat;
+      document.getElementById('timeFormatModal').classList.add('active');
+    }
+
+    function openDateFormatModal() {
+      document.getElementById('dateFormatSelect').value = AppData.settings.preferences.dateFormat;
+      document.getElementById('dateFormatModal').classList.add('active');
+    }
+
+    function openLogoutModal() {
+      document.getElementById('logoutModal').classList.add('active');
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('active');
+    }
+
+    function savePassword() {
+      const current = document.getElementById('currentPassword').value;
+      const newPass = document.getElementById('newPassword').value;
+      const confirm = document.getElementById('confirmPassword').value;
+
+      if (!current || !newPass || !confirm) {
+        alert('Please fill in all fields');
+        return;
+      }
+
+      if (newPass !== confirm) {
+        alert('New passwords do not match');
+        return;
+      }
+
+      if (newPass.length < 6) {
+        alert('Password must be at least 6 characters long');
+        return;
+      }
+
+      document.getElementById('currentPassword').value = '';
+      document.getElementById('newPassword').value = '';
+      document.getElementById('confirmPassword').value = '';
+      closeModal('changePasswordModal');
+      showSuccess('Password Changed', 'Your password has been updated successfully!');
+    }
+
+    function saveReminderTime() {
+      const value = document.getElementById('reminderTimeSelect').value;
+      AppData.settings.notifications.defaultReminder = value;
+      saveSettings();
+      renderSettings();
+      closeModal('reminderTimeModal');
+      showSuccess('Reminder Time Updated', `Default reminder time set to: ${value}`);
+    }
+
+    function saveReminderType() {
+      const sound = document.getElementById('soundCheck').checked;
+      const vibrate = document.getElementById('vibrateCheck').checked;
+      AppData.settings.notifications.sound = sound;
+      AppData.settings.notifications.vibrate = vibrate;
+      
+      saveSettings();
+      renderSettings();
+      closeModal('reminderTypeModal');
+      showSuccess('Reminder Type Updated', 'Your reminder preferences have been saved!');
+    }
+
+    function saveDefaultView() {
+      const value = document.getElementById('defaultViewSelect').value;
+      AppData.settings.preferences.defaultView = value;
+      saveSettings();
+      renderSettings();
+      closeModal('defaultViewModal');
+      showSuccess('Default View Updated', 'Your login page preference has been saved!');
+    }
+
+    function saveTimeFormat() {
+      const value = document.getElementById('timeFormatSelect').value;
+      AppData.settings.preferences.timeFormat = value;
+      saveSettings();
+      renderSettings();
+      closeModal('timeFormatModal');
+      showSuccess('Time Format Updated', 'Your time format preference has been saved!');
+    }
+
+    function saveDateFormat() {
+      const value = document.getElementById('dateFormatSelect').value;
+      AppData.settings.preferences.dateFormat = value;
+      saveSettings();
+      renderSettings();
+      closeModal('dateFormatModal');
+      showSuccess('Date Format Updated', 'Your date format preference has been saved!');
+    }
+
+    function confirmLogout() {
+      closeModal('logoutModal');
+      window.location.href = 'splash.html';
+    }
+
+    function showSuccess(title, message) {
+      document.getElementById('successTitle').textContent = title;
+      document.getElementById('successMessage').textContent = message;
+      document.getElementById('successModal').classList.add('active');
+    }
+
+    document.addEventListener('click', function(e) {
+      const panel = document.getElementById('notificationPanel');
+      const notifBtn = document.querySelector('.notification-btn');
+      if (panel.classList.contains('active') && 
+          !panel.contains(e.target) && 
+          !notifBtn.contains(e.target)) {
+        panel.classList.remove('active');
+      }
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        const modals = document.querySelectorAll('.modal.active');
+        modals.forEach(modal => modal.classList.remove('active'));
+      }
+    });
+  </script>
+</body>
+</html>
